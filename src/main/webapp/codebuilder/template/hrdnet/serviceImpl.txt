@@ -1,0 +1,52 @@
+package ${packageName}.service.impl;
+
+import ${packageName}.dao.${pascalTableName}DAO;
+import ${packageName}.service.${pascalTableName}Service;
+import ${packageName}.vo.${pascalTableName}SearchVO;
+import ${packageName}.vo.${pascalTableName}VO;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+
+/*
+ * ${tableComments}(${tableName})
+ */
+
+@Service("${camelTableName}Service")
+public class ${pascalTableName}ServiceImpl extends EgovAbstractServiceImpl implements ${pascalTableName}Service {
+	@Resource(name = "${camelTableName}DAO")
+	private ${pascalTableName}DAO ${camelTableName}DAO;
+
+	public List<${pascalTableName}VO> select${pascalTableName}List(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
+		return ${camelTableName}DAO.select${pascalTableName}List(${camelTableName}SearchVO);
+	}
+
+	public List<${pascalTableName}VO> select${pascalTableName}PageList(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
+		return ${camelTableName}DAO.select${pascalTableName}PageList(${camelTableName}SearchVO);
+	}
+
+	public int select${pascalTableName}PageListCnt(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
+		return ${camelTableName}DAO.select${pascalTableName}PageListCnt(${camelTableName}SearchVO);
+	}
+
+	public ${pascalTableName}VO select${pascalTableName}ByPrimaryKey(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
+		return ${camelTableName}DAO.select${pascalTableName}ByPrimaryKey(${camelTableName}SearchVO);
+	}
+
+	public Object insert${pascalTableName}(${pascalTableName}VO ${camelTableName}VO) {
+		return ${camelTableName}DAO.insert${pascalTableName}(${camelTableName}VO);
+	}
+
+	public int update${pascalTableName}(${pascalTableName}VO ${camelTableName}VO) {
+		return ${camelTableName}DAO.update${pascalTableName}(${camelTableName}VO);
+	}
+
+	public int delete${pascalTableName}ByPrimaryKey(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
+		return ${camelTableName}DAO.delete${pascalTableName}ByPrimaryKey(${camelTableName}SearchVO);
+	}
+}

@@ -1,0 +1,26 @@
+  select a.table_name table_name,
+         b.comments table_comments,
+         c.column_name column_name,
+         d.comments column_comments,
+         c.data_type data_type,
+         c.data_length data_length,
+         c.nullable nullable,
+         c.column_id column_id,
+         (select listagg(y.constraint_type, ',') within group (order by constraint_type) constraint_type
+            from user_cons_columns x, user_constraints y
+           where x.table_name = y.table_name and
+                 x.constraint_name = y.constraint_name and
+                 x.table_name = upper('tb_ls_crs_sess') and
+                 x.column_name = c.column_name and
+                 1 = 1) constraint_type
+    from user_tables a,
+         user_tab_comments b,
+         user_tab_columns c,
+         user_col_comments d
+   where a.table_name = b.table_name and
+         a.table_name = c.table_name and
+         c.table_name = d.table_name and
+         c.column_name = d.column_name and
+         a.table_name = upper('tb_ls_crs_sess') and
+         1 = 1
+order by c.column_id asc;

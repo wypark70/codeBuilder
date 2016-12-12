@@ -1,0 +1,91 @@
+{var newLine = "\n"}
+{var empty = ""}
+{var nbsp = " "}
+{var nbsp7 = "\t\t       "}
+{var nbsp8 = "\t\t        "}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<!-- ${tableComments}(${tableName}) -->
+
+<sqlMap>
+	<typeAlias alias="${camelTableName}VO" type="${packageName}.vo.${pascalTableName}VO" />
+	<typeAlias alias="${camelTableName}SearchVO" type="${packageName}.vo.${pascalTableName}SearchVO" />
+
+	<sql id="${packageName}.${pascalTableName}SelectSql">
+		{for col in colArr}{if col_index > 0}${nbsp7}{elseif}${"\t\t"}select{/if} x.${col.columnName} "${col.camelColumnName}"{if col_index < (colArr.length - 1)},{/if}{if col.columnComments}${" "}/* ${col.columnComments} */{/if}${newLine}{/for}
+		  from ${tableName} x
+	</sql>
+
+	<sql id="${packageName}.${pascalTableName}WhereSql">
+		 where${nbsp}{for col in colArr}{if col_index > 0}${newLine} ${nbsp7}{/if}<isPropertyAvailable property="${col.camelColumnName}"><isNotEmpty property="${col.camelColumnName}">x.${col.columnName} = #${col.camelColumnName}# and</isNotEmpty></isPropertyAvailable>{/for}${empty}
+		       <isPropertyAvailable property="searchKey">
+		           <isNotEmpty property="searchKey">
+		               <isPropertyAvailable property="searchValue">
+		                   <isNotEmpty property="searchValue">x.$searchKey$ like '%' || #searchValue# || '%'</isNotEmpty>
+		               </isPropertyAvailable>
+		           </isNotEmpty>
+		       </isPropertyAvailable>
+		       <isPropertyAvailable property="rownum"><isNotEmpty property="rownum">rownum &lt;= #rownum# and</isNotEmpty></isPropertyAvailable>
+		       1 = 1
+	</sql>
+
+	<sql id="${packageName}.${pascalTableName}OrderSql">
+		 order by 1 asc
+	</sql>
+
+	<sql id="${packageName}.${pascalTableName}WhereSqlByPrimaryKey">
+		 where${nbsp}{for col in primaryKeyArr}{if col_index > 0}${newLine} ${nbsp7}{/if}x.${col.columnName} = #${col.camelColumnName}# and{/for}${empty}
+		       1 = 1
+	</sql>
+
+	<select id="${packageName}.select${pascalTableName}List" parameterClass="${camelTableName}SearchVO" resultClass="${camelTableName}VO">
+		<include refid="${packageName}.${pascalTableName}SelectSql" />
+		<include refid="${packageName}.${pascalTableName}WhereSql" />
+		<include refid="${packageName}.${pascalTableName}OrderSql" />
+	</select>
+
+	<select id="${packageName}.select${pascalTableName}PageList" parameterClass="${camelTableName}SearchVO" resultClass="${camelTableName}VO">
+		with
+		listtab as (
+		    <include refid="${packageName}.${pascalTableName}SelectSql" />
+		    <include refid="${packageName}.${pascalTableName}WhereSql" />
+		    <include refid="${packageName}.${pascalTableName}OrderSql" />),
+		topntab as (
+		    select rownum rnum,
+		           a.*
+		      from listtab a
+		     where rownum &lt;= #currentPageNo# * #recordCountPerPage#)
+		select *
+		  from topntab
+		 where rnum &gt; (#currentPageNo# - 1) * #recordCountPerPage#
+	</select>
+
+	<select id="${packageName}.select${pascalTableName}PageListCnt" parameterClass="${camelTableName}SearchVO" resultClass="java.lang.Integer">
+		select count(1) "toltalCnt"
+		  from ${tableName} x
+		<include refid="${packageName}.${pascalTableName}WhereSql" />
+	</select>
+
+	<select id="${packageName}.select${pascalTableName}ByPrimaryKey" parameterClass="${camelTableName}SearchVO" resultClass="${camelTableName}VO">
+		<include refid="${packageName}.${pascalTableName}SelectSql" />
+		<include refid="${packageName}.${pascalTableName}WhereSqlByPrimaryKey" />
+	</select>
+
+	<insert id="${packageName}.insert${pascalTableName}" parameterClass="${camelTableName}VO">
+		insert into ${tableName}
+		       ({for col in colArr}${col.columnName}{if col_index < (colArr.length - 1)},{if col_index % 5 != 4}${nbsp}{/if}{/if}{if col_index < (colArr.length - 1) && col_index % 5 === 4}${newLine}${nbsp8}{/if}{/for})
+		values ({for col in colArr}#${col.camelColumnName}#{if col_index < (colArr.length - 1)},{if col_index % 5 != 4}${nbsp}{/if}{/if}{if col_index < (colArr.length - 1) && col_index % 5 === 4}${newLine}${nbsp8}{/if}{/for})
+	</insert>
+
+	<update id="${packageName}.update${pascalTableName}" parameterClass="${camelTableName}VO">
+		update ${tableName} x
+		{for col in colArr}{if col_index > 0}${nbsp7}{elseif}${"\t\t   "}set${nbsp}{/if}{if "int" == col.javaDataType}<isGreaterThan property="${col.camelColumnName}" compareValue="0">{else}<isNotNull property="${col.camelColumnName}">{/if}x.${col.columnName} = #${col.camelColumnName}#{if col_index < (colArr.length - 1)},{/if}{if col.columnComments}${" "}/* ${col.columnComments} */{/if}{if "int" == col.javaDataType}</isGreaterThan>{else}</isNotNull>{/if}${newLine}{/for}
+		<include refid="${packageName}.${pascalTableName}WhereSqlByPrimaryKey" />
+	</update>
+
+	<delete id="${packageName}.delete${pascalTableName}ByPrimaryKey" parameterClass="${camelTableName}SearchVO">
+		delete ${tableName} x
+		<include refid="${packageName}.${pascalTableName}WhereSqlByPrimaryKey" />
+	</delete>
+</sqlMap>

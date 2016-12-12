@@ -1,0 +1,12 @@
+/*
+ * ${tableComments}(${tableName})
+ */
+
+{for col in colArr}${camelTableName}VO.set${col.pascalColumnName}(${camelTableName}VO2.get${col.pascalColumnName}());{if col.columnComments}${" //"}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${"\n"}{/for}
+${""}
+{for col in colArr}
+<tr>
+	<th scope="row"><label for="${col.camelColumnName}">${col.columnComments} <b class="colr_point4 ml5">*</b></label> </th>
+	<td><input type="text" id="${col.camelColumnName}" name="${col.camelColumnName}" class="w40p" value="${col.jstlValStr}" /></td>
+</tr>
+{/for}

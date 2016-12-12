@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="codebuilder">
+
+	<typeAlias alias="tableColumnsVO" type="egovframework.codebuilder.vo.TableColumnsVO" />
+
+	<select id="TableColumnsDAO.selectTableColumnsList" parameterClass="TableColumnsVO" resultClass="tableColumnsVO">
+	 select a.table_name tableName,
+	        b.comments tableComments,
+	        c.column_name columnName,
+	        d.comments columnComments,
+	        c.data_type dataType,
+	        c.data_length dataLength,
+	        c.nullable nullable,
+	        c.column_id columnId,
+	        decode(e.column_name, null, 'N', 'Y') primaryKeyYn
+	   from user_tables a,
+	        user_tab_comments b,
+	        user_tab_columns c,
+	        user_col_comments d,
+	        (select x.table_name table_name,
+	                x.column_name column_name
+	           from user_cons_columns x,
+	                user_constraints y
+	          where x.table_name = y.table_name and
+	                x.constraint_name = y.constraint_name and
+	                y.constraint_type = 'P' and
+	                x.table_name = upper(#tableName#) and
+	                1 = 1) e
+	  where a.table_name = b.table_name and
+	        a.table_name = c.table_name and
+	        c.table_name = d.table_name and
+	        c.column_name = d.column_name and
+	        c.column_name = e.column_name(+) and
+	        a.table_name = upper(#tableName#) and
+	        1 = 1
+	  order by c.column_id asc
+	</select>
+
+	<select id="TableColumnsDAO.selectTableColumnsListCnt" parameterClass="tableColumnsVO" resultClass="java.lang.Integer">
+	 select count(1) totalCnt
+	   from user_tables a,
+	        user_tab_comments b,
+	        user_tab_columns c,
+	        user_col_comments d
+	  where a.table_name = b.table_name and
+	        a.table_name = c.table_name and
+	        c.table_name = d.table_name and
+	        c.column_name = d.column_name and
+	        a.table_name = upper(#tableName#) and
+	        1 = 1
+	</select>
+
+	<select id="TableColumnsDAO.selectTableColumnsList2" parameterClass="TableColumnsVO" resultClass="tableColumnsVO">
+	  select a.owner "owner",
+	         a.table_name "tableName",
+	         (select comments from sys.all_tab_comments where owner = a.owner and table_name = a.table_name) "tableComments",
+	         c.column_name "columnName",
+	         (select comments from sys.all_col_comments where owner = c.owner and table_name = c.table_name and column_name = c.column_name) "columnComments",
+	         c.data_type "dataType",
+	         c.data_length "dataLength",
+	         c.nullable "nullable",
+	         c.column_id "columnId",
+	         (select decode(count(1), 0, 'N', 'Y') from sys.all_cons_columns x, sys.all_constraints y where x.owner = y.owner and x.table_name = y.table_name and x.constraint_name = y.constraint_name and x.owner = c.owner and x.table_name = c.table_name and x.column_name = c.column_name and y.constraint_type = 'P') "primaryKeyYn"
+	    from sys.all_tables a,
+	         sys.all_tab_columns c
+	   where a.owner = c.owner and
+	         a.table_name = c.table_name and
+	         a.owner = 'LMSUSR2' and
+	         a.table_name = upper(#tableName#) and
+	         1 = 1
+	order by a.owner asc, a.table_name, c.column_id asc
+	</select>
+
+	<select id="TableColumnsDAO.selectTableColumnsListCnt2" parameterClass="tableColumnsVO" resultClass="java.lang.Integer">
+	  select count(1) totalCnt
+	    from sys.all_tables a,
+	         sys.all_tab_columns c
+	   where a.owner = c.owner and
+	         a.table_name = c.table_name and
+	         a.owner = 'LMSUSR2' and
+	         a.table_name = upper(#tableName#) and
+	         1 = 1
+	</select>
+
+</sqlMap>

@@ -1,0 +1,35 @@
+{var newLine = "\n"}
+{var blank = ""}
+{var nbsp = " "}
+{var tab = "	"}
+
+package ${packageName}.vo;
+
+import java.util.Date;
+
+import egovframework.com.cmm.vo.SearchVO;
+import net.sf.json.JSONObject;
+
+/*
+ * ${tableComments}(${tableName})
+ */
+
+public class ${pascalTableName}SearchVO extends SearchVO {
+	{for col in primaryKeyArr}${tab}private ${col.javaDataType} ${col.camelColumnName};{if col.columnComments}${" //"}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${newLine}{/for}
+${blank}
+	@Override
+	public String toString() {
+		return JSONObject.fromObject(this).toString();
+	}
+
+	{for col in primaryKeyArr}
+	public void set${col.pascalColumnName}(${col.javaDataType} ${col.camelColumnName}) {
+		this.${col.camelColumnName} = ${col.camelColumnName};
+	}
+	public ${col.javaDataType} get${col.pascalColumnName}() {
+		return this.${col.camelColumnName};
+	}
+
+	{/for}
+
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+
+	<!-- 환경설정 기본정보를 globals.properties 에서 참조하도록 propertyConfigurer 설정 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/egovframework/egovProps/globals.properties</value>
+				<!-- value>file:/product/jeus/egovProps/globals.properties</value -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- datasource 설정(propertyConfigurer 활용) -->
+	<alias name="dataSource0" alias="dataSource0" />
+	<alias name="dataSource1" alias="dataSource1" />
+	<alias name="dataSource2" alias="dataSource2" />
+
+	<!-- Oracle -->
+	<bean id="dataSource0" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${Globals.ds0.DriverClassName}" />
+		<property name="url" value="${Globals.ds0.Url}" />
+		<property name="username" value="${Globals.ds0.UserName}" />
+		<property name="password" value="${Globals.ds0.Password}" />
+	</bean>
+
+	<bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${Globals.ds1.DriverClassName}" />
+		<property name="url" value="${Globals.ds1.Url}" />
+		<property name="username" value="${Globals.ds1.UserName}" />
+		<property name="password" value="${Globals.ds1.Password}" />
+	</bean>
+
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${Globals.ds2.DriverClassName}" />
+		<property name="url" value="${Globals.ds2.Url}" />
+		<property name="username" value="${Globals.ds2.UserName}" />
+		<property name="password" value="${Globals.ds2.Password}" />
+	</bean>
+
+</beans>

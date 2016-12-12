@@ -1,0 +1,26 @@
+package ${packageName}.service;
+
+import ${packageName}.vo.${pascalTableName}SearchVO;
+import ${packageName}.vo.${pascalTableName}VO;
+
+import java.util.List;
+
+/*
+ * ${tableComments}(${tableName})
+ */
+
+public interface ${pascalTableName}Service {
+	public List<${pascalTableName}VO> select${pascalTableName}List(${pascalTableName}SearchVO ${camelTableName}SearchVO) throws Exception;
+
+	public List<${pascalTableName}VO> select${pascalTableName}PageList(${pascalTableName}SearchVO ${camelTableName}SearchVO) throws Exception;
+
+	public int select${pascalTableName}PageListCnt(${pascalTableName}SearchVO ${camelTableName}SearchVO) throws Exception;
+
+	public ${pascalTableName}VO select${pascalTableName}ByPrimaryKey(${pascalTableName}SearchVO ${camelTableName}SearchVO) throws Exception;
+
+	public Object insert${pascalTableName}(${pascalTableName}VO ${camelTableName}VO) throws Exception;
+
+	public int update${pascalTableName}(${pascalTableName}VO ${camelTableName}VO) throws Exception;
+
+	public int delete${pascalTableName}ByPrimaryKey(${pascalTableName}SearchVO ${camelTableName}SearchVO) throws Exception;
+}

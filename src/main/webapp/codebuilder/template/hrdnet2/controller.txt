@@ -1,0 +1,51 @@
+package ${packageName}.web;
+
+/*
+ * ${tableComments}(${tableName})
+ */
+
+{var pathName = "/" + packageName.split(/\./).join("/") + "/";}
+{var pathName2 = packageName.split(/\./).join("/") + "/";}
+@Controller
+public class ${pascalTableName}Controller {
+	@Resource(name = "${camelTableName}Service")
+	private ${pascalTableName}Service ${camelTableName}Service;
+
+	@RequestMapping("${pathName}get${pascalTableName}ListView.do")
+	public String get${pascalTableName}ListView(@ModelAttribute("${camelTableName}SearchVO") ${pascalTableName}SearchVO ${camelTableName}SearchVO, ModelMap model) throws Exception {
+		tbLsCrsSessSearchVO.setRownum(new Long(100));
+		model.addAttribute("${camelTableName}VOList", tbLsCrsSessService.selectTbLsCrsSessList(tbLsCrsSessSearchVO));
+		return "${pathName2}get${pascalTableName}ListView";
+	}
+
+	@RequestMapping("${pathName}get${pascalTableName}DetailView.do")
+	public String get${pascalTableName}DetailView(@ModelAttribute("${camelTableName}SearchVO") ${pascalTableName}SearchVO ${camelTableName}SearchVO, ModelMap model) throws Exception {
+		tbLsCrsSessSearchVO.setRownum(new Long(1));
+		model.addAttribute("${camelTableName}VO", tbLsCrsSessService.selectTbLsCrsSessList(tbLsCrsSessSearchVO));
+		return "${pathName2}get${pascalTableName}DetailView";
+	}
+
+	@RequestMapping("${pathName}get${pascalTableName}InsertView.do")
+	public String get${pascalTableName}InsertView(@ModelAttribute("searchVO") ${pascalTableName}VO searchVO, ModelMap model) throws Exception {
+		return "${pathName2}get${pascalTableName}InsertView";
+	}
+
+	@RequestMapping("${pathName}get${pascalTableName}UpdateView.do")
+	public String ${pascalTableName}UpdateView(@ModelAttribute("searchVO") ${pascalTableName}VO searchVO, ModelMap model) throws Exception {
+		return "${pathName2}get${pascalTableName}UpdateView";
+	}
+
+	@RequestMapping("${pathName}create${pascalTableName}.do")
+	public void create${pascalTableName}(@ModelAttribute("searchVO") ${pascalTableName}VO searchVO, @ModelAttribute("${camelTableName}VO") ${pascalTableName}VO ${camelTableName}VO, ModelMap model) throws Exception {
+	}
+
+	@RequestMapping("${pathName}modify${pascalTableName}.do")
+	public String modify${pascalTableName}(@ModelAttribute("searchVO") ${pascalTableName}VO searchVO, @ModelAttribute("${camelTableName}VO") ${pascalTableName}VO ${camelTableName}VO, ModelMap model) throws Exception {
+		return "forward:${pathName2}${pascalTableName}ListView.do";
+	}
+
+	@RequestMapping("${pathName}remove${pascalTableName}.do")
+	public String remove${pascalTableName}(@ModelAttribute("searchVO") ${pascalTableName}VO searchVO, @ModelAttribute("${camelTableName}VO") ${pascalTableName}VO ${camelTableName}VO, ModelMap model) throws Exception {
+		return "forward:${pathName2}${pascalTableName}ListView.do";
+	}
+}
