@@ -12,12 +12,11 @@
 		</property>
 	</bean>
 
-	<!-- datasource 설정(propertyConfigurer 활용) -->
 	<alias name="dataSource0" alias="dataSource0" />
 	<alias name="dataSource1" alias="dataSource1" />
 	<alias name="dataSource2" alias="dataSource2" />
 
-	<!-- Oracle -->
+	<!--
 	<bean id="dataSource0" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${Globals.ds0.DriverClassName}" />
 		<property name="url" value="${Globals.ds0.Url}" />
@@ -32,7 +31,6 @@
 		<property name="password" value="${Globals.ds1.Password}" />
 	</bean>
 
-	<!--
 	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${Globals.ds2.DriverClassName}" />
 		<property name="url" value="${Globals.ds2.Url}" />
@@ -41,9 +39,18 @@
 	</bean>
 	-->
 
-	<bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:/comp/env/jdbc/nexgens" />
+	<bean id="dataSource0" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc0/nexgens" />
 	</bean>
+
+	<bean id="dataSource1" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc1/nexgens" />
+	</bean>
+
+	<bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc2/nexgens" />
+	</bean>
+
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="nexgens" resource-ref="true" /> -->
 
 </beans>
