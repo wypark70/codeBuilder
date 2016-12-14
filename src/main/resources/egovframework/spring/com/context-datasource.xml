@@ -32,11 +32,18 @@
 		<property name="password" value="${Globals.ds1.Password}" />
 	</bean>
 
+	<!--
 	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${Globals.ds2.DriverClassName}" />
 		<property name="url" value="${Globals.ds2.Url}" />
 		<property name="username" value="${Globals.ds2.UserName}" />
 		<property name="password" value="${Globals.ds2.Password}" />
 	</bean>
+	-->
+
+	<bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc/nexgens" />
+	</bean>
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="nexgens" resource-ref="true" /> -->
 
 </beans>
