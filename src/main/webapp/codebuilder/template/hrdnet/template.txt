@@ -4,11 +4,11 @@
  */
 
 {for col in colArr}
- -- ${col.camelColumnName}:{if col.columnComments} ${col.columnComments} ${col.dbDataType}(${col.dataLength})${newLine}{/if}
+ -- ${col.camelColumnName}:{if col.columnComments} ${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${newLine}
 {/for}
 ${""}
 {for col in colArr}
-	<${col.camelColumnName}></${col.camelColumnName}>{if col.columnComments} <!-- ${col.columnComments} ${col.dbDataType}(${col.dataLength}) -->${newLine}{/if}
+	<${col.camelColumnName}></${col.camelColumnName}>{if col.columnComments} <!-- ${col.columnComments} ${col.dbDataType}(${col.dataLength}) -->{/if}${newLine}
 {/for}
 ${""}
 {for col in colArr}${camelTableName}VO.set${col.pascalColumnName}(${camelTableName}VO.get${col.pascalColumnName}() == null ? "" : ${camelTableName}VO.get${col.pascalColumnName}());{if col.columnComments}${" //"}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${"\n"}{/for}

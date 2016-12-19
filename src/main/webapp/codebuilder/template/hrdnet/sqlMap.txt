@@ -13,12 +13,12 @@
 	<typeAlias alias="${camelTableName}SearchVO" type="${packageName}.vo.${pascalTableName}SearchVO" />
 
 	<sql id="${packageName}.${pascalTableName}SelectSql">
-		{for col in colArr}{if col_index > 0}${nbsp7}{elseif}${"\t\t"}select{/if} x.${col.columnName} "${col.camelColumnName}"{if col_index < (colArr.length - 1)},{/if}{if col.columnComments}${" "}/* ${col.columnComments} */{/if}${newLine}{/for}
+		{for col in colArr}{if col_index > 0}${nbsp7}{elseif}${"\t\t"}select${nbsp}{/if}x.${col.columnName} "${col.camelColumnName}"{if col_index < (colArr.length - 1)},{/if}{if col.columnComments}${" "}/* ${col.columnComments} */{/if}${newLine}{/for}
 		  from ${tableName} x
 	</sql>
 
 	<sql id="${packageName}.${pascalTableName}WhereSql">
-		 where${nbsp}{for col in colArr}{if col_index > 0}${newLine} ${nbsp7}{/if}<isPropertyAvailable property="${col.camelColumnName}"><isNotEmpty property="${col.camelColumnName}">x.${col.columnName} = #${col.camelColumnName}# and</isNotEmpty></isPropertyAvailable>{/for}${empty}
+		 where${nbsp}{for col in colArr}{if col_index > 0}${newLine}${nbsp7}{/if}<isPropertyAvailable property="${col.camelColumnName}"><isNotEmpty property="${col.camelColumnName}">x.${col.columnName} = #${col.camelColumnName}# and</isNotEmpty></isPropertyAvailable>{/for}${empty}
 		       <isPropertyAvailable property="searchKey">
 		           <isNotEmpty property="searchKey">
 		               <isPropertyAvailable property="searchValue">

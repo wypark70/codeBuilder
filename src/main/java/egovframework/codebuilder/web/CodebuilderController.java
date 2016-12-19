@@ -139,12 +139,9 @@ public class CodebuilderController {
 			}
 		}
 		finally {
-			if (bufferedWriter != null)
-				bufferedWriter.close();
-			if (bufferedReader != null)
-				bufferedReader.close();
-			if (stringReader != null)
-				stringReader.close();
+			if (bufferedWriter != null) bufferedWriter.close();
+			if (bufferedReader != null) bufferedReader.close();
+			if (stringReader != null) stringReader.close();
 		}
 	}
 
@@ -175,85 +172,68 @@ public class CodebuilderController {
 		return returnPage;
 	}
 
-	@RequestMapping(value="/codebuilder/selectDS0TablesListJson.do", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "/codebuilder/selectDS0TablesListJson.do", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectTablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS0TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping(value="/codebuilder/selectDS1TablesListJson.do", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "/codebuilder/selectDS1TablesListJson.do", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectDS1TablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS1TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping(value="/codebuilder/selectDS2TablesListJson.do", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "/codebuilder/selectDS2TablesListJson.do", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectDS2TablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS2TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping(value="/codebuilder/selectDS0TableColumnsListJson.do", produces="text/plain;charset=UTF-8")
-	@ResponseBody
-	public Map<String, Object> selectTableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO) throws Exception {
+	@RequestMapping(value = "/codebuilder/selectDS0TableColumnsListJson.do")
+	public String selectTableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
 		Map<String, Object> map = tableColumnsService.selectDS0TableColumnsList(tableColumnsVO);
-		return map;
+		model.addAttribute("searchVO", tableColumnsVO);
+		model.addAttribute("resultList", map.get("resultList"));
+		model.addAttribute("resultCnt", map.get("resultCnt"));
+		return "jsonView";
 	}
 
-	@RequestMapping(value="/codebuilder/selectDS1TableColumnsListJson.do", produces="text/plain;charset=UTF-8")
-	@ResponseBody
-	public Map<String, Object> selectDS1TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO) throws Exception {
+	@RequestMapping(value = "/codebuilder/selectDS1TableColumnsListJson.do")
+	public String selectDS1TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
 		Map<String, Object> map = tableColumnsService.selectDS1TableColumnsList(tableColumnsVO);
-		return map;
+		model.addAttribute("searchVO", tableColumnsVO);
+		model.addAttribute("resultList", map.get("resultList"));
+		model.addAttribute("resultCnt", map.get("resultCnt"));
+		return "jsonView";
 	}
 
 	@RequestMapping("/codebuilder/selectDS2TableColumnsListJson.do")
 	public String selectDS2TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
 		Map<String, Object> map = tableColumnsService.selectDS2TableColumnsList(tableColumnsVO);
-		model.addAttribute("searchVO", map.get("searchVO"));
+		model.addAttribute("searchVO", tableColumnsVO);
 		model.addAttribute("resultList", map.get("resultList"));
 		model.addAttribute("resultCnt", map.get("resultCnt"));
-		
-		/*
-		StringBuilder sqlSB = new StringBuilder();
-		try {
-			sqlSB.append("\n  select a.table_name table_name,");
-			sqlSB.append("\n         b.comments table_comments,");
-			sqlSB.append("\n         c.column_name column_name,");
-			sqlSB.append("\n         d.comments column_comments,");
-			sqlSB.append("\n         c.data_type data_type,");
-			sqlSB.append("\n         c.data_length data_length,");
-			sqlSB.append("\n         c.nullable nullable,");
-			sqlSB.append("\n         c.column_id column_id,");
-			sqlSB.append("\n         (select listagg(y.constraint_type, ',') within group (order by constraint_type) constraint_type");
-			sqlSB.append("\n            from user_cons_columns x, user_constraints y");
-			sqlSB.append("\n           where x.table_name = y.table_name and");
-			sqlSB.append("\n                 x.constraint_name = y.constraint_name and");
-			sqlSB.append("\n                 x.table_name = upper('tb_ls_crs_sess') and");
-			sqlSB.append("\n                 x.column_name = c.column_name and");
-			sqlSB.append("\n                 1 = 1) constraint_type");
-			sqlSB.append("\n    from user_tables a,");
-			sqlSB.append("\n         user_tab_comments b,");
-			sqlSB.append("\n         user_tab_columns c,");
-			sqlSB.append("\n         user_col_comments d");
-			sqlSB.append("\n   where a.table_name = b.table_name and");
-			sqlSB.append("\n         a.table_name = c.table_name and");
-			sqlSB.append("\n         c.table_name = d.table_name and");
-			sqlSB.append("\n         c.column_name = d.column_name and");
-			sqlSB.append("\n         a.table_name = upper('tb_ls_crs_sess') and");
-			sqlSB.append("\n         1 = 1");
-			sqlSB.append("\norder by c.column_id asc");
 
-			tableColumnsService.executeQuery(sqlSB.toString());
+		return "jsonView";
+	}
+
+	@RequestMapping("/codebuilder/selectDS2TableColumnsListJsonBySQL.do")
+	public String selectDS2TableColumnsListJsonBySQL(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, @RequestParam String sql, Model model) throws Exception {
+		Map<String, Object> map = null;
+		try {
+			map = tableColumnsService.executeQuery(sql);
 		}
 		catch (Exception e) {
-			System.out.println(sqlSB.toString());
+			System.out.println(sql);
 			System.out.println(e.getMessage());
+			System.out.println(getPrintStacTraceString(e));
 		}
-		*/
+		model.addAttribute("searchVO", tableColumnsVO);
+		model.addAttribute("resultList", map.get("columnList"));
 
 		return "jsonView";
 	}

@@ -23,4 +23,5 @@
          c.column_name = d.column_name and
          a.table_name = upper('tb_ls_crs_sess') and
          1 = 1
-order by c.column_id asc;
+order by c.column_id asc
+

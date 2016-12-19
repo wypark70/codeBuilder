@@ -4,14 +4,25 @@
 
 <style type="text/css">
 .selectTd {background: #ffeedd !important;}
-.codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
-.CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; border: 1px solid #eee; height: 600px;}
-.cm-tab {
+
+#queryTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; border: 1px solid #eee; height: 300px;}
+#queryTabs .cm-tab {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
 	background-position: right;
 	background-repeat: no-repeat;
 }
-.codeMirrorTextarea {width: 100%; height: 600px;}
+#queryTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
+#queryTabs .codeMirrorTextarea {width: 100%; height: 300px;}
+
+#resultTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; border: 1px solid #eee; height: 600px;}
+#resultTabs .cm-tab {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+#resultTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
+#resultTabs .codeMirrorTextarea {width: 100%; height: 600px;}
+
 #tablesList th {font-size: 14px;}
 #tablesList td {font-size: 12px;}
 </style>
@@ -40,46 +51,17 @@
 	</div>
 	<div id="queryDiv" class="codeMirrorDiv">
 		<textarea class="codeMirrorTextarea" id="queryTextarea" data-key="query" data-mode="text/x-plsql"></textarea>
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default" style="margin-bottom: 0px;">
 			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Brand</a>
-				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-						<li><a href="#">Link</a></li>
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Separated link</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">One more separated link</a></li>
-							</ul></li>
-					</ul>
-					<form class="navbar-form navbar-left">
+					<form id="executeSqlForm" name="executeSqlForm" class="navbar-form navbar-right" action="<c:url value="/codebuilder/selectDS2TableColumnsListJsonBySQL.do" />" method="post">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search">
+							<input type="text" id="tableName" name="tableName" class="form-control" placeholder="tableName" />
+							<input type="text" id="tableComments" name="tableComments" class="form-control" placeholder="tableComments" />
+							<input id="sql" name="sql" type="hidden" />
 						</div>
-						<button type="submit" class="btn btn-default">Submit</button>
+						<button id="executeSqlBtn" type="submit" class="btn btn-default">Submit</button>
 					</form>
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#">Link</a></li>
-						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Separated link</a></li>
-							</ul></li>
-					</ul>
 				</div>
 			</div>
 		</nav>
@@ -105,7 +87,7 @@
 	<input type="hidden" id="sqlMapString" name="sqlMapString" />
 	<input type="hidden" id="serviceString" name="serviceString" />
 	<input type="hidden" id="serviceImplString" name="serviceImplString" />
-	<input type="hidden" id="controllerString" name="controllerString" /></form>
+	<input type="hidden" id="controllerString" name="controllerString" />
 </form>
 <br />
 <div id="resultTabs">
@@ -134,18 +116,20 @@
 <br />
 
 <script type="text/javascript">
-var contextPath = "${pageContext.request.contextPath}";
-var editor = new Object();
-
 $(function() {
-	var $queryTabs = $( "#queryTabs").tabs({
+	var contextPath = "${pageContext.request.contextPath}";
+	var editor = new Object();
+	var $queryTabs = $( "#queryTabs");
+	var $resultTabs = $( "#resultTabs");
+
+	$queryTabs.tabs({
 		activate: function(event, ui) {
 			var tabId = $(ui.newTab).attr("id");
 			if (editor[tabId]) editor[tabId].refresh();
 		}
 	});
 
-	var $resultTabs = $( "#resultTabs").tabs({
+	$resultTabs.tabs({
 		/* event: "mouseover", */
 		activate: function(event, ui) {
 			var tabId = $(ui.newTab).attr("id");
@@ -181,7 +165,8 @@ $(function() {
 		name: "htmlmixed",
 		scriptTypes: [
 			{matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
-			{matches: /(text|application)\/(x-)?vb(a|script)/i, mode: "vbscript"}]
+			{matches: /(text|application)\/(x-)?vb(a|script)/i, mode: "vbscript"}
+		]
 	};
 
 	$(".codeMirrorTextarea").each(function() {
@@ -199,6 +184,57 @@ $(function() {
 		});
 	});
 
+	setCode("query", {});
+
+	$('#executeSqlForm').ajaxForm({
+		success: function(result) {
+			var tableName = result.searchVO.tableName.toLowerCase() || "execute_query_tab";
+			var tableComments = result.searchVO.tableComments || "쿼리문실행";
+			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			$("#packageName").val(packageName);
+			$("#pascalTableName").val(pascalCasing(tableName));
+			var resultList = result.resultList;
+			var tmpObj = {
+				"jstlSt": "\$\{",
+				"jstlEd": "\}",
+				"packageName": packageName,
+				"tableName": tableName.toLowerCase(),
+				"tableComments": tableComments,
+				"pascalTableName": pascalCasing(tableName),
+				"camelTableName": camelCasing(tableName),
+				"colArr": new Array(),
+				"primaryKeyArr": new Array()
+			};
+			resultList.forEach(function(v, i) {
+				var newObj = {
+					columnName: v.columnName.toLowerCase(),
+					columnComments: v.columnComments.replace(/\s/gi, ""),
+					camelColumnName: camelCasing(v.columnName),
+					pascalColumnName: pascalCasing(v.columnName),
+					javaDataType: getJavaType(v.dataType),
+					dbDataType: v.dataType,
+					dataLength: v.dataLength,
+					jstlValStr: "\$\{" + tmpObj.camelTableName + "VO." + camelCasing(v.columnName) + "\}"
+				};
+				tmpObj.colArr.push(newObj);
+				if('Y' === v.primaryKeyYn) {
+					tmpObj.primaryKeyArr.push(newObj);
+				}
+			});
+			console.log(JSON.stringify(tmpObj));
+			$(".codeMirrorTextarea", $resultTabs).each(function() {
+				var data = $(this).data();
+				setCode(data.key, tmpObj);
+			});
+		},
+		dataType: "json"
+	});
+
+	$("#executeSqlBtn").click(function() {
+		var $executeSqlForm = $("#executeSqlForm")
+		$("#sql", $executeSqlForm).val(editor["query"].getValue());
+		$executeSqlForm.submit();
+	});
 
 	$('#saveAsFileForm').ajaxForm({
 		success: function(result) {
@@ -222,103 +258,105 @@ $(function() {
 	});
 
 	$("#tablesList.table > tbody > tr:first").trigger("click");
-});
 
-function codebuilder(data) {
-	var tableName = data[0];
-	var tableComments = data[1];
+	function codebuilder(data) {
+		var tableName = data[0];
+		var tableComments = data[1];
 
-	$.ajax({
-		method: "POST",
-		url: "./selectDS2TableColumnsListJson.do",
-		data: {tableName: tableName},
-		dataType: "json"
-	}).done(function(msg) {
-		var tableName = msg.searchVO.tableName.toLowerCase();
-		var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
-		$("#packageName").val(packageName);
-		$("#pascalTableName").val(pascalCasing(tableName));
-		var resultList = msg.resultList;
-		var tmpObj = {
-			"jstlSt": "\$\{",
-			"jstlEd": "\}",
-			"packageName": packageName,
-			"tableName": tableName.toLowerCase(),
-			"tableComments": tableComments,
-			"pascalTableName": pascalCasing(tableName),
-			"camelTableName": camelCasing(tableName),
-			"colArr": new Array(),
-			"primaryKeyArr": new Array()
-		};
-		resultList.forEach(function(v, i) {
-			var newObj = {
-				columnName: v.columnName.toLowerCase(),
-				columnComments: v.columnComments,
-				camelColumnName: camelCasing(v.columnName),
-				pascalColumnName: pascalCasing(v.columnName),
-				javaDataType: getJavaType(v.dataType),
-				dbDataType: v.dataType,
-				dataLength: v.dataLength,
-				jstlValStr: "\$\{" + tmpObj.camelTableName + "VO." + camelCasing(v.columnName) + "\}"
+		$.ajax({
+			method: "POST",
+			url: "./selectDS2TableColumnsListJson.do",
+			data: {tableName: tableName},
+			dataType: "json"
+		}).done(function(msg) {
+			var tableName = msg.searchVO.tableName.toLowerCase();
+			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			$("#packageName").val(packageName);
+			$("#pascalTableName").val(pascalCasing(tableName));
+			var resultList = msg.resultList;
+			var tmpObj = {
+				"jstlSt": "\$\{",
+				"jstlEd": "\}",
+				"packageName": packageName,
+				"tableName": tableName.toLowerCase(),
+				"tableComments": tableComments,
+				"pascalTableName": pascalCasing(tableName),
+				"camelTableName": camelCasing(tableName),
+				"colArr": new Array(),
+				"primaryKeyArr": new Array()
 			};
-			tmpObj.colArr.push(newObj);
-			if('Y' === v.primaryKeyYn) {
-				tmpObj.primaryKeyArr.push(newObj);
+			resultList.forEach(function(v, i) {
+				var newObj = {
+					columnName: v.columnName.toLowerCase(),
+					columnComments: v.columnComments.replace(/\s/gi, ""),
+					camelColumnName: camelCasing(v.columnName),
+					pascalColumnName: pascalCasing(v.columnName),
+					javaDataType: getJavaType(v.dataType),
+					dbDataType: v.dataType,
+					dataLength: v.dataLength,
+					jstlValStr: "\$\{" + tmpObj.camelTableName + "VO." + camelCasing(v.columnName) + "\}"
+				};
+				tmpObj.colArr.push(newObj);
+				if('Y' === v.primaryKeyYn) {
+					tmpObj.primaryKeyArr.push(newObj);
+				}
+			});
+			console.log(JSON.stringify(tmpObj));
+			$(".codeMirrorTextarea", $resultTabs).each(function() {
+				var data = $(this).data();
+				setCode(data.key, tmpObj);
+			});
+		});
+	}
+
+	function camelCasing(columnName) {
+		var tmpArr = columnName.toLowerCase().split(/_/);
+		tmpArr.forEach(function(v, i) {
+			if (i > 0) {
+				tmpArr[i] = v.substr(0, 1).toUpperCase() + v.substr(1);
 			}
 		});
-		console.log(JSON.stringify(tmpObj));
-		$(".codeMirrorTextarea").each(function() {
-			var data = $(this).data();
-			setCode(data.key, tmpObj);
-		});
-	});
-}
+		return tmpArr.join(''); 
+	}
 
-function camelCasing(columnName) {
-	var tmpArr = columnName.toLowerCase().split(/_/);
-	tmpArr.forEach(function(v, i) {
-		if (i > 0) {
+	function pascalCasing(columnName) {
+		var tmpArr = columnName.toLowerCase().split(/_/);
+		tmpArr.forEach(function(v, i) {
 			tmpArr[i] = v.substr(0, 1).toUpperCase() + v.substr(1);
+		});
+		return tmpArr.join(''); 
+	}
+
+	function getJavaType(dataType) {
+		var retType = "String";
+		if ("NVARCHAR2" === dataType.toUpperCase()) {
+			retType = "String";
 		}
-	});
-	return tmpArr.join(''); 
-}
-
-function pascalCasing(columnName) {
-	var tmpArr = columnName.toLowerCase().split(/_/);
-	tmpArr.forEach(function(v, i) {
-		tmpArr[i] = v.substr(0, 1).toUpperCase() + v.substr(1);
-	});
-	return tmpArr.join(''); 
-}
-
-function getJavaType(dataType) {
-	var retType = "String";
-	if ("NVARCHAR2" === dataType.toUpperCase()) {
-		retType = "String";
+		else if ("NUMBER" === dataType.toUpperCase()) {
+			retType = "Long";
+		}
+		else if ("DATE" === dataType.toUpperCase()) {
+			retType = "Date";
+		}
+		return retType;
 	}
-	else if ("NUMBER" === dataType.toUpperCase()) {
-		retType = "Long";
-	}
-	else if ("DATE" === dataType.toUpperCase()) {
-		retType = "Date";
-	}
-	return retType;
-}
 
-function formatStr(str, obj) {
-	var retStr = str;
-	for (key in obj) {
-		var regexp = new RegExp("\\%\\{" + key + "\\}", "gi");
-		retStr = retStr.replace(regexp, obj[key]);
+	function formatStr(str, obj) {
+		var retStr = str;
+		for (key in obj) {
+			var regexp = new RegExp("\\%\\{" + key + "\\}", "gi");
+			retStr = retStr.replace(regexp, obj[key]);
+		}
+		return retStr;
 	}
-	return retStr;
-}
 
-function setCode(key,  d) {
-	$.get(contextPath + "/codebuilder/template/hrdnet/" + key + ".txt", function(data) {
-		editor[key].setValue(data.process(d));
-		//$("#" + key + "Textarea").val(data.process(d));
-	}, "text");
-}
+	function setCode(key,  d) {
+		$.get(contextPath + "/codebuilder/template/hrdnet/" + key + ".txt", function(data) {
+			editor[key].setValue(data.process(d));
+			//$("#" + key + "Textarea").val(data.process(d));
+		}, "text");
+	}
+});
+
+
 </script>
