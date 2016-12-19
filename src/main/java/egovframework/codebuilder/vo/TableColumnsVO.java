@@ -2,6 +2,8 @@ package egovframework.codebuilder.vo;
 
 import java.io.Serializable;
 
+import net.sf.json.JSONObject;
+
 public class TableColumnsVO implements Serializable {
 	private static final long serialVersionUID = 5685068431612147862L;
 
@@ -14,6 +16,11 @@ public class TableColumnsVO implements Serializable {
 	private String nullable;
 	private int columnId;
 	private String primaryKeyYn;
+
+	@Override
+	public String toString() {
+		return JSONObject.fromObject(this).toString();
+	}
 
 	public String getTableName() {
 		return tableName;

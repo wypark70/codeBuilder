@@ -1,5 +1,8 @@
 package egovframework.codebuilder.service.impl;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,4 +68,47 @@ public class TableColumnsServiceImpl extends EgovAbstractServiceImpl implements 
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> executeQuery(String sqlStr) throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		ResultSet resultSet = tableColumnsClient2DAO.executeQuery(sqlStr);
+
+		if (resultSet.next()) {
+			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			List<TableColumnsVO> tmpMapList = new ArrayList<TableColumnsVO>();
+			for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+				int colnum = i + 1;
+				TableColumnsVO tableColumnsVO = new TableColumnsVO();
+				tableColumnsVO.setTableName("TABLE_NAME");
+				tableColumnsVO.setTableComments("테이블명");
+				tableColumnsVO.setColumnName(resultSetMetaData.getSchemaName(colnum));
+				tableColumnsVO.setColumnComments("aaa");
+				tableColumnsVO.setDataType(resultSetMetaData.getColumnTypeName(colnum));
+				tableColumnsVO.setDataLength(resultSetMetaData.getColumnDisplaySize(colnum) + "");
+				tableColumnsVO.setNullable("Y");
+				tableColumnsVO.setColumnId(colnum);
+				tableColumnsVO.setPrimaryKeyYn("N");
+
+				// System.out.println(">>>>>>> tableColumnsVO: " + tableColumnsVO.toString());
+				tmpMapList.add(tableColumnsVO);
+			}
+			resultMap.put("columnList", tmpMapList);
+		}
+
+		resultSet.beforeFirst();
+		List<List<String>> tmpList = new ArrayList<List<String>>();
+		while (resultSet.next()) {
+			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			List<String> tmpList2 = new ArrayList<String>();
+			for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+				int colnum = i + 1;
+				tmpList2.add(resultSet.getString(colnum));
+			}
+			// System.out.println(">>>>>>> tmpMapList: " + tmpList2.toString());
+			tmpList.add(tmpList2);
+		}
+		resultMap.put("dataList", tmpList);
+
+		return resultMap;
+	}
 }

@@ -25,19 +25,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.jdbc.support.lob.LobHandler;
-import egovframework.rte.psl.orm.ibatis.support.AbstractLobTypeHandler;
+import org.springframework.orm.ibatis.support.AbstractLobTypeHandler;
 
 /**
- * iBATIS TypeHandler implementation for Strings that get mapped to CLOBs.
- * Retrieves the LobHandler to use from SqlMapClientFactoryBean at config time.
+ * iBATIS TypeHandler implementation for Strings that get mapped to CLOBs. Retrieves the LobHandler to use from SqlMapClientFactoryBean at config time.
  *
- * <p>Particularly useful for storing Strings with more than 4000 characters in an
- * Oracle database (only possible via CLOBs), in combination with OracleLobHandler.
+ * <p>
+ * Particularly useful for storing Strings with more than 4000 characters in an Oracle database (only possible via CLOBs), in combination with OracleLobHandler.
  *
- * <p>Can also be defined in generic iBATIS mappings, as DefaultLobCreator will
- * work with most JDBC-compliant database drivers. In this case, the field type
- * does not have to be BLOB: For databases like MySQL and MS SQL Server, any
- * large enough binary type will work.
+ * <p>
+ * Can also be defined in generic iBATIS mappings, as DefaultLobCreator will work with most JDBC-compliant database drivers. In this case, the field type does not have to be BLOB: For databases like MySQL and MS SQL Server, any large enough binary type will work.
  *
  * @author Juergen Hoeller
  * @since 1.1.5
@@ -49,8 +46,8 @@ public class AltibaseClobStringTypeHandler extends AbstractLobTypeHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AltibaseClobStringTypeHandler.class);
 
 	/**
-	 * Constructor used by iBATIS: fetches config-time LobHandler from
-	 * SqlMapClientFactoryBean.
+	 * Constructor used by iBATIS: fetches config-time LobHandler from SqlMapClientFactoryBean.
+	 * 
 	 * @see org.springframework.orm.ibatis.SqlMapClientFactoryBean#getConfigTimeLobHandler
 	 */
 	public AltibaseClobStringTypeHandler() {
@@ -64,43 +61,42 @@ public class AltibaseClobStringTypeHandler extends AbstractLobTypeHandler {
 		super(lobHandler);
 	}
 
-	protected void setParameterInternal(
-			PreparedStatement ps, int index, Object value, String jdbcType, LobCreator lobCreator)
-			throws SQLException {
+	protected void setParameterInternal(PreparedStatement ps, int index, Object value, String jdbcType, LobCreator lobCreator) throws SQLException {
 		lobCreator.setClobAsString(ps, index, (String) value);
 	}
 
-
-	protected Object getResultInternal(ResultSet rs, int index, LobHandler lobHandler)
-			throws SQLException {
+	protected Object getResultInternal(ResultSet rs, int index, LobHandler lobHandler) throws SQLException {
 
 		StringBuffer read_data = new StringBuffer("");
-	    int read_length;
+		int read_length;
 
-		char [] buf = new char[1024];
+		char[] buf = new char[1024];
 
-		Reader rd =  lobHandler.getClobAsCharacterStream(rs, index);
-	    try {
-			while( (read_length=rd.read(buf))  != -1) {
+		Reader rd = lobHandler.getClobAsCharacterStream(rs, index);
+		try {
+			while ((read_length = rd.read(buf)) != -1) {
 				read_data.append(buf, 0, read_length);
 			}
-	    } catch (IOException ie) {
-	    	LOGGER.debug("ie: {}", ie);//SQLException sqle = new SQLException(ie.getMessage());
-	    	//throw sqle;
-    	// 2011.10.10 보안점검 후속조치
-	    } finally {
-		    if (rd != null) {
-			try {
-			    rd.close();
-			} catch (Exception ignore) {
-				LOGGER.debug("IGNORE: {}", ignore.getMessage());
+		}
+		catch (IOException ie) {
+			LOGGER.debug("ie: {}", ie);// SQLException sqle = new SQLException(ie.getMessage());
+			// throw sqle;
+			// 2011.10.10 보안점검 후속조치
+		}
+		finally {
+			if (rd != null) {
+				try {
+					rd.close();
+				}
+				catch (Exception ignore) {
+					LOGGER.debug("IGNORE: {}", ignore.getMessage());
+				}
 			}
-		    }
 		}
 
-	    return read_data.toString();
+		return read_data.toString();
 
-		//return lobHandler.getClobAsString(rs, index);
+		// return lobHandler.getClobAsString(rs, index);
 	}
 
 	public Object valueOf(String s) {

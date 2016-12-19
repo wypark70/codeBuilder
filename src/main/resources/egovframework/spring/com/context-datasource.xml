@@ -16,7 +16,6 @@
 	<alias name="dataSource1" alias="dataSource1" />
 	<alias name="dataSource2" alias="dataSource2" />
 
-	<!--
 	<bean id="dataSource0" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${Globals.ds0.DriverClassName}" />
 		<property name="url" value="${Globals.ds0.Url}" />
@@ -37,8 +36,21 @@
 		<property name="username" value="${Globals.ds2.UserName}" />
 		<property name="password" value="${Globals.ds2.Password}" />
 	</bean>
+
+	<!--
+	<bean id="dataSource2" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSource2Spied" />
+		<property name="logFormatter">
+			<bean class="egovframework.com.cmm.util.MyLog4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="margin" value="10" />
+				<property name="sqlPrefix" value="SQL:::" />
+			</bean>
+		</property>
+	</bean>
 	-->
 
+	<!--
 	<bean id="dataSource0" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc0/nexgens" />
 	</bean>
@@ -50,6 +62,7 @@
 	<bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc2/nexgens" />
 	</bean>
+	-->
 
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="nexgens" resource-ref="true" /> -->
 

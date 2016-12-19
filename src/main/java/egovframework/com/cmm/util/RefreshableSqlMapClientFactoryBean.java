@@ -19,12 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.Resource;
+import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 //import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
-
-import egovframework.rte.psl.orm.ibatis.SqlMapClientFactoryBean;
 
 /**
  * iBATIS sqlmap 클라이언트의 sqlMap 및 sqlMapConfig 파일의 변경을 감지, 실시간 적용하는 팩토리 빈.

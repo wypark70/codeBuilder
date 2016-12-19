@@ -12,4 +12,6 @@ public interface TableColumnsService {
 
 	public Map<String, Object> selectDS2TableColumnsList(TableColumnsVO searchVO) throws Exception;
 
+	public Map<String, Object> executeQuery(String sqlStr) throws Exception;
+
 }

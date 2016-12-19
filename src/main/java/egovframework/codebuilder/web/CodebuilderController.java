@@ -54,6 +54,7 @@ public class CodebuilderController {
 
 	@RequestMapping(value = "/codebuilder/saveAsFile.do", method = RequestMethod.POST)
 	public String saveAsFile(@RequestParam Map<String, String> paramMap, Model model) throws Exception {
+		System.out.println(">>>>>>> paramMap: " + paramMap.toString());
 		StringBuilder resultStringBuilder = new StringBuilder();
 		String rootPath = "D:/codebuildOutput";
 		String packagePath = paramMap.get("packageName").replaceAll("\\.", "/");
@@ -95,7 +96,7 @@ public class CodebuilderController {
 			saveAsFile(paramMap.get("controllerString"), fileName);
 			resultStringBuilder.append(fileName);
 			resultStringBuilder.append("\r\n");
-			
+
 			resultStringBuilder.append("파일이 생성 되었습니다.");
 		}
 		catch (Exception e) {
@@ -174,35 +175,35 @@ public class CodebuilderController {
 		return returnPage;
 	}
 
-	@RequestMapping("/codebuilder/selectDS0TablesListJson.do")
+	@RequestMapping(value="/codebuilder/selectDS0TablesListJson.do", produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectTablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS0TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping("/codebuilder/selectDS1TablesListJson.do")
+	@RequestMapping(value="/codebuilder/selectDS1TablesListJson.do", produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectDS1TablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS1TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping("/codebuilder/selectDS2TablesListJson.do")
+	@RequestMapping(value="/codebuilder/selectDS2TablesListJson.do", produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectDS2TablesListJson(@ModelAttribute("searchVO") TablesVO tablesVO) throws Exception {
 		Map<String, Object> map = tablesService.selectDS2TablesList(tablesVO);
 		return map;
 	}
 
-	@RequestMapping("/codebuilder/selectDS0TableColumnsListJson.do")
+	@RequestMapping(value="/codebuilder/selectDS0TableColumnsListJson.do", produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectTableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO) throws Exception {
 		Map<String, Object> map = tableColumnsService.selectDS0TableColumnsList(tableColumnsVO);
 		return map;
 	}
 
-	@RequestMapping("/codebuilder/selectDS1TableColumnsListJson.do")
+	@RequestMapping(value="/codebuilder/selectDS1TableColumnsListJson.do", produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> selectDS1TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO) throws Exception {
 		Map<String, Object> map = tableColumnsService.selectDS1TableColumnsList(tableColumnsVO);
@@ -215,6 +216,44 @@ public class CodebuilderController {
 		model.addAttribute("searchVO", map.get("searchVO"));
 		model.addAttribute("resultList", map.get("resultList"));
 		model.addAttribute("resultCnt", map.get("resultCnt"));
+		
+		/*
+		StringBuilder sqlSB = new StringBuilder();
+		try {
+			sqlSB.append("\n  select a.table_name table_name,");
+			sqlSB.append("\n         b.comments table_comments,");
+			sqlSB.append("\n         c.column_name column_name,");
+			sqlSB.append("\n         d.comments column_comments,");
+			sqlSB.append("\n         c.data_type data_type,");
+			sqlSB.append("\n         c.data_length data_length,");
+			sqlSB.append("\n         c.nullable nullable,");
+			sqlSB.append("\n         c.column_id column_id,");
+			sqlSB.append("\n         (select listagg(y.constraint_type, ',') within group (order by constraint_type) constraint_type");
+			sqlSB.append("\n            from user_cons_columns x, user_constraints y");
+			sqlSB.append("\n           where x.table_name = y.table_name and");
+			sqlSB.append("\n                 x.constraint_name = y.constraint_name and");
+			sqlSB.append("\n                 x.table_name = upper('tb_ls_crs_sess') and");
+			sqlSB.append("\n                 x.column_name = c.column_name and");
+			sqlSB.append("\n                 1 = 1) constraint_type");
+			sqlSB.append("\n    from user_tables a,");
+			sqlSB.append("\n         user_tab_comments b,");
+			sqlSB.append("\n         user_tab_columns c,");
+			sqlSB.append("\n         user_col_comments d");
+			sqlSB.append("\n   where a.table_name = b.table_name and");
+			sqlSB.append("\n         a.table_name = c.table_name and");
+			sqlSB.append("\n         c.table_name = d.table_name and");
+			sqlSB.append("\n         c.column_name = d.column_name and");
+			sqlSB.append("\n         a.table_name = upper('tb_ls_crs_sess') and");
+			sqlSB.append("\n         1 = 1");
+			sqlSB.append("\norder by c.column_id asc");
+
+			tableColumnsService.executeQuery(sqlSB.toString());
+		}
+		catch (Exception e) {
+			System.out.println(sqlSB.toString());
+			System.out.println(e.getMessage());
+		}
+		*/
 
 		return "jsonView";
 	}

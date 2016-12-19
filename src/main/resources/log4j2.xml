@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-	<Appenders>
-		<Console name="console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d %5p [%c] %m%n" />
-		</Console>
-	</Appenders>
-	<Loggers>
-		<Logger name="java.sql" level="INFO" additivity="false">
-			<AppenderRef ref="console" />
-		</Logger>
-		<Logger name="jdbc.sqltiming" level="INFO" additivity="false">
-			<AppenderRef ref="console" />
-		</Logger>
-		<Logger name="egovframework.rte.psl.dataaccess" level="DEBUG" additivity="false">
-			<AppenderRef ref="console" />
-		</Logger>
-		<Logger name="org.springframework.web.servlet.mvc" level="DEBUG" additivity="false">
-			<AppenderRef ref="console" />
-		</Logger>
-		<Logger name="egovframework.com.cmm.util" level="DEBUG" additivity="false">
-			<AppenderRef ref="console" />
-		</Logger>
-		<Root level="ERROR">
-			<AppenderRef ref="console" />
-		</Root>
-	</Loggers>
-</Configuration>
+<configuration>
+	<appenders>
+		<console name="console" target="SYSTEM_OUT">
+			<patternLayout pattern="%d %5p [%c] %m%n" />
+		</console>
+	</appenders>
+
+	<loggers>
+		<logger name="jdbc.sqlonly" level="info" />
+		<logger name="jdbc.sqltiming" level="off" />
+		<logger name="jdbc.audit" level="off" />
+		<logger name="jdbc.resultset" level="off" />
+		<logger name="jdbc.resultsettable" level="off" />
+		<logger name="jdbc.connection" level="off" />
+
+		<logger name="egovframework.rte.psl.dataaccess" level="debug" additivity="false">
+			<appenderRef ref="console" />
+		</logger>
+		<logger name="egovframework.com.cmm.util" level="debug" additivity="false">
+			<appenderRef ref="console" />
+		</logger>
+
+		<logger name="org.springframework.web.servlet.mvc" level="debug" additivity="false">
+			<appenderRef ref="console" />
+		</logger>
+
+		<root level="info">
+			<appenderRef ref="console" />
+		</root>
+	</loggers>
+</configuration>
