@@ -64,6 +64,7 @@
 
 	<mvc:annotation-driven />
 
+	<!--
 	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
 		<property name="definitions">
 			<list>
@@ -71,4 +72,5 @@
 			</list>
 		</property>
 	</bean>
+	-->
 </beans>

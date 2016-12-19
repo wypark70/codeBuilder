@@ -266,6 +266,7 @@ function codebuilder(data) {
 				tmpObj.primaryKeyArr.push(newObj);
 			}
 		});
+		console.log(JSON.stringify(tmpObj));
 		$(".codeMirrorTextarea").each(function() {
 			var data = $(this).data();
 			setCode(data.key, tmpObj);
