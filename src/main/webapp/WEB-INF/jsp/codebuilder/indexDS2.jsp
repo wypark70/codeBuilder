@@ -208,7 +208,7 @@ $(function() {
 			resultList.forEach(function(v, i) {
 				var newObj = {
 					columnName: v.columnName.toLowerCase(),
-					columnComments: v.columnComments.replace(/\s/gi, ""),
+					columnComments: v.columnComments ? v.columnComments.replace(/\s/gi, "") : "",
 					camelColumnName: camelCasing(v.columnName),
 					pascalColumnName: pascalCasing(v.columnName),
 					javaDataType: getJavaType(v.dataType),
@@ -288,7 +288,7 @@ $(function() {
 			resultList.forEach(function(v, i) {
 				var newObj = {
 					columnName: v.columnName.toLowerCase(),
-					columnComments: v.columnComments.replace(/\s/gi, ""),
+					columnComments: v.columnComments ? v.columnComments.replace(/\s/gi, "") : "",
 					camelColumnName: camelCasing(v.columnName),
 					pascalColumnName: pascalCasing(v.columnName),
 					javaDataType: getJavaType(v.dataType),
