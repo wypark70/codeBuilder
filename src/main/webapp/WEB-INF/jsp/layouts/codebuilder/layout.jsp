@@ -22,9 +22,6 @@
 	<link href="<c:url value="/bower_components/codemirror/addon/hint/show-hint.css" />" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript" src="<c:url value="/bower_components/jquery/dist/jquery.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/js/jquery.form.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/js/bootstrap-filestyle.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/js/trimpath-template-1.0.38.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/bower_components/datatables.net/js/jquery.dataTables.min.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/bower_components/jquery-ui/jquery-ui.min.js" />"></script>
@@ -42,6 +39,14 @@
 	<script type="text/javascript" src="<c:url value="/bower_components/codemirror/addon/hint/show-hint.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/bower_components/codemirror/addon/hint/sql-hint.js" />"></script>
 
+	<script type="text/javascript" src="<c:url value="/js/jquery.form.min.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/js/bootstrap-filestyle.min.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/js/trimpath-template-1.0.38.js" />"></script>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/bower_components/elfinder/css/elfinder.min.css" />">
+	<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/bower_components/elfinder/css/theme.css" />">
+	<script type="text/javascript" src="<c:url value="/bower_components/elfinder/js/elfinder.min.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/bower_components/elfinder/js/i18n/elfinder.ko.js" />"></script>
 </head>
 
 <body>

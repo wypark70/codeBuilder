@@ -226,14 +226,17 @@ public class CodebuilderController {
 		Map<String, Object> map = null;
 		try {
 			map = tableColumnsService.executeQuery(sql);
+			model.addAttribute("message", "SUCCESS");
+			model.addAttribute("searchVO", tableColumnsVO);
+			model.addAttribute("tableColumnsVOList", map.get("tableColumnsVOList"));
+			model.addAttribute("columnMapList", map.get("columnMapList"));
+			model.addAttribute("resultDataList", map.get("resultDataList"));
 		}
 		catch (Exception e) {
-			System.out.println(sql);
-			System.out.println(e.getMessage());
-			System.out.println(getPrintStacTraceString(e));
+			model.addAttribute("message", "FAIL");
+			model.addAttribute("errorMessage", e.getMessage());
+			model.addAttribute("errorStacTraceString", getPrintStacTraceString(e));
 		}
-		model.addAttribute("searchVO", tableColumnsVO);
-		model.addAttribute("resultList", map.get("columnList"));
 
 		return "jsonView";
 	}

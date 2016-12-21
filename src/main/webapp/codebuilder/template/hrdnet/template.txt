@@ -19,3 +19,7 @@ ${""}
 	<td><input type="text" id="${col.camelColumnName}" name="${col.camelColumnName}" class="w40p" value="${col.jstlValStr}" /></td>
 </tr>
 {/for}
+${""}
+{for col in colArr}
+<tr><td>${col.camelColumnName}</td><td>${col.columnComments}</td><td>${col.dbDataType}</td><td>${col.dataLength}</td></tr>
+{/for}

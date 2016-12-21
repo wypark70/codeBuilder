@@ -36,14 +36,19 @@ public class TableColumnsClient2DAO extends EgovClient2AbstractDAO {
 		ResultSet resultSet = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
+		StringBuilder querySb = new StringBuilder();
+		querySb.append("with org_query_tab as (");
+		querySb.append(sqlStr);
+		querySb.append(") select * from org_query_tab where rownum <= 500");
 		try {
 			connection = dataSource.getConnection();
-			preparedStatement = connection.prepareStatement(sqlStr, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			preparedStatement = connection.prepareStatement(querySb.toString(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
 				ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-				List<TableColumnsVO> tmpMapList = new ArrayList<TableColumnsVO>();
+				List<TableColumnsVO> tableColumnsVOList = new ArrayList<TableColumnsVO>();
+				List<Map<String, String>> columnMapList = new ArrayList<Map<String, String>>();
 				for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 					int colnum = i + 1;
 					TableColumnsVO tableColumnsVO = new TableColumnsVO();
@@ -56,29 +61,29 @@ public class TableColumnsClient2DAO extends EgovClient2AbstractDAO {
 					tableColumnsVO.setNullable("Y");
 					tableColumnsVO.setColumnId(colnum);
 					tableColumnsVO.setPrimaryKeyYn("N");
+					tableColumnsVOList.add(tableColumnsVO);
+					System.out.println(tableColumnsVO.toString());
 
-					System.out.println(">>>>>>> tableColumnsVO: " + tableColumnsVO.toString());
-					tmpMapList.add(tableColumnsVO);
+					Map<String, String> columnMap = new HashMap<String, String>();
+					columnMap.put("title", tableColumnsVO.getColumnName());
+					columnMapList.add(columnMap);
 				}
-				resultMap.put("columnList", tmpMapList);
+				resultMap.put("columnMapList", columnMapList);
+				resultMap.put("tableColumnsVOList", tableColumnsVOList);
 			}
 
 			resultSet.beforeFirst();
-			List<List<String>> tmpList = new ArrayList<List<String>>();
+			List<List<String>> resultDataList = new ArrayList<List<String>>();
 			while (resultSet.next()) {
 				ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-				List<String> tmpList2 = new ArrayList<String>();
+				List<String> relultData = new ArrayList<String>();
 				for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 					int colnum = i + 1;
-					tmpList2.add(resultSet.getString(colnum));
+					relultData.add(resultSet.getString(colnum));
 				}
-				System.out.println(">>>>>>> tmpMapList: " + tmpList2.toString());
-				tmpList.add(tmpList2);
+				resultDataList.add(relultData);
 			}
-			//resultMap.put("dataList", tmpList);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+			resultMap.put("resultDataList", resultDataList);
 		}
 		finally {
 			if (resultSet != null) resultSet.close();

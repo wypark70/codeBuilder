@@ -15,6 +15,8 @@
 
 </style>
 
+<div id="elfinder"></div>
+
 <table id="tablesList" class="nowrap table table-striped table-bordered bootstrap-datatable">
 	<thead>
 		<tr>
@@ -69,7 +71,13 @@
 </div>
 <br />
 <br />
-
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+	$('#elfinder').elfinder({
+		url : '<c:url value="/elfinder/connector" />'
+	});
+});
+</script>
 <script type="text/javascript">
 var contextPath = "${pageContext.request.contextPath}";
 var editor = [];

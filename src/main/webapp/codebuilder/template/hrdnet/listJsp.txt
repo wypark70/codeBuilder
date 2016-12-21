@@ -1,218 +1,362 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="apple-mobile-web-app-capable" content="no" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	<meta name="format-detection" content="telephone=no" />
-	<meta name="author" content="HRD" />
-	<meta name="robots" content="all" />
-	<meta name="keywords" content="HRD" />
-	<meta name="description" content="한국고용정보원" />
-	<meta http-equiv="Expires" content="-1" />
-	<meta http-equiv="Pragma" content="no-cache" />
-	<meta http-equiv="Cache-Control" content="No-cache" />
 
-	<title>Excel Upload Sample</title>
+<style type="text/css">
+.selectTd {background: #ffeedd !important;}
 
-	<link href="<c:url value="/html/mgmt/comm/css/bootstrap.min.css" />" rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/html/mgmt/comm/css/bootstrap-theme.min.css" />" rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/html/mgmt/comm/css/dataTables.bootstrap.min.css" />" rel="stylesheet" type="text/css" />
+#queryTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; border: 1px solid #eee; height: 300px;}
+#queryTabs .cm-tab {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+#queryTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
+#queryTabs .codeMirrorTextarea {width: 100%; height: 300px;}
 
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/jquery-2.1.1.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/bootstrap.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/jquery.dataTables.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/dataTables.bootstrap.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/bootstrap-filestyle.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/html/mgmt/comm/js/trimpath-template-1.0.38.js" />"></script>
+#resultTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; border: 1px solid #eee; height: 600px;}
+#resultTabs .cm-tab {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+#resultTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
+#resultTabs .codeMirrorTextarea {width: 100%; height: 600px;}
 
-	<style type="text/css">
-		button.joinBtn {float: right;}
-		td.highlight {background-color: orange !important;}
-		tr.highlight {background-color: orange !important;}
-		td.selected {background-color: olive !important;}
-		tr.selected {background-color: olive !important;}
-		td.highlight.selected {background-color: orange !important;}
-		tr.highlight.selected {background-color: orange !important;}
-		#excelUploadBtn {float: right;}
-	</style>
-
-	<script type="text/javascript">
-		(function() {
-			nativeAlert = window.alert;
-
-			document.createElement('header');
-			document.createElement('nav');
-			document.createElement('section');
-			document.createElement('article');
-			document.createElement('aside');
-			document.createElement('footer');
-			document.createElement('hgroup');
-
-			if (typeof Array.prototype.forEach != "function") {
-				Array.prototype.forEach = function(callback) {
-					for (var i = 0; i < this.length; i ++) {
-						callback.apply(this, [this[i], i , this]);
-					}
-				};
-			}
-			if (typeof Array.prototype.filter != "function") {
-				Array.prototype.filter = function(callback) {
-					for (var i = 0; i < this.length; i ++) {
-						callback.apply(this, [this[i], i , this]);
-					}
-				};
-			}
-			if (typeof String.prototype.endsWith != "function") {
-				String.prototype.endsWith = function(suffix) {
-					return this.indexOf(suffix, this.length - suffix.length) !== -1;
-				};
-			}
-		})();
-	</script>
-</head>
-
-<body>
-	<div class="jumbotron text-center">
-		<h1>엑셀파일 업로드</h1>
-		<p>엑셀파일 업로드 한결과를 화면에 표시합니다.</p>
+#tablesList th {font-size: 14px;}
+#tablesList td {font-size: 12px;}
+</style>
+<div id="queryTabs">
+	<ul>
+		<li id="table"><a href="#tableDiv">tableDiv</a></li>
+		<li id="query"><a href="#queryDiv">queryDiv</a></li>
+	</ul>
+	<div id="tableDiv">
+		<table id="tablesList" class="nowrap table table-striped table-bordered bootstrap-datatable">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="tablesVO" items="${jstlSt}result.resultList}" varStatus="status">
+				<tr>
+					<td>${jstlSt}tablesVO.tableName}</td>
+					<td>${jstlSt}tablesVO.tableComments}</td>
+				</tr>
+				</c:forEach>
+			</tbody>
+		</table>
 	</div>
-
-	<div class="container" style="min-width: 980px;">
-		<div class="panel panel-default">
-			<div class="panel-heading">Upload Excel File</div>
-			<div class="panel-body">
-				<form class="form-inline" name="excelUploadForm" id="excelUploadForm" method="post" enctype="multipart/form-data" action="<c:url value='/eduport/lms/back/cpmgnt/excelUpload.go'/>">
-					<div>
+	<div id="queryDiv" class="codeMirrorDiv">
+		<textarea class="codeMirrorTextarea" id="queryTextarea" data-key="query" data-mode="text/x-plsql"></textarea>
+		<nav class="navbar navbar-default" style="margin-bottom: 0px;">
+			<div class="container-fluid">
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<form id="executeSqlForm" name="executeSqlForm" class="navbar-form navbar-right" action="<c:url value="/codebuilder/selectDS2TableColumnsListJsonBySQL.do" />" method="post">
 						<div class="form-group">
-							<label for="excelFile" title="Excel File">Excel File: </label>
-							<input type="file" id="excelFile" name="excelFile" class="form-control" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+							<input type="text" id="tableName" name="tableName" class="form-control" placeholder="tableName" />
+							<input type="text" id="tableComments" name="tableComments" class="form-control" placeholder="tableComments" />
+							<input id="sql" name="sql" type="hidden" />
 						</div>
-						<button id="excelUploadBtn" type="button" class="btn btn-default">Submit</button>
-					</div>
-					<input type="hidden" id="sheetNum" name="sheetNum" class="form-control" value="${jstlSt}sheetNum${jstlEd}" />
-					<input type="hidden" id="headRowNum" name="headRowNum" class="form-control" value="${jstlSt}headRowNum${jstlEd}" />
-					<input type="hidden" id="dataRowNum" name="dataRowNum" class="form-control" value="${jstlSt}dataRowNum${jstlEd}" />
-				</form>
+						<button id="executeSqlBtn" type="submit" class="btn btn-default">Submit</button>
+					</form>
+				</div>
 			</div>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading">DataTable</div>
-			<div class="panel-body">
-				<table id="dataTable" class="nowrap table table-striped table-bordered bootstrap-datatable datatable" style="display: none;">
-					<thead>
-						<tr>
-							<c:forEach items="${jstlSt}excelHeadList${jstlEd}" var="name" varStatus="status">
-							<th scope="col">${jstlSt}fn:replace(name, newline, "")${jstlEd}</th>
-							</c:forEach>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach items="${jstlSt}excelDataList${jstlEd}" var="rowData" varStatus="status">
-						<tr>
-							<c:forEach items="${jstlSt}rowData${jstlEd}" var="val" varStatus="status">
-							<td align="left">${jstlSt}fn:escapeXml(val)${jstlEd}</td>
-							</c:forEach>
-						</tr>
-						</c:forEach>
-					</tbody>
-					<tfoot>
-						<tr>
-							<c:forEach items="${jstlSt}excelHeadList${jstlEd}" var="name" varStatus="status">
-							<th scope="col">${jstlSt}fn:replace(name, newline, "")${jstlEd}</th>
-							</c:forEach>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-		</div>
+		</nav>
 	</div>
+</div>
+<br />
+<form class="form-inline" action="<c:url value="/codebuilder/saveAsFile.do" />" name="saveAsFileForm" id="saveAsFileForm" method="post">
+	<div>
+		<div class="form-group">
+			<label for="packageName" title="Package name">Package name: </label>
+			<input id="packageName" name="packageName" class="form-control" type="text" value="" />
+		</div>
+		<div class="form-group">
+			<label for="rootFolder" title="Root folder">Root folder: </label>
+			<input id="rootFolder" name="rootFolder" class="form-control" type="text" value="D://codebuilderOutput" />
+		</div>
+		<button id="saveAsFileBtn" class="form-control" type="button">Save as files</button>
+	</div>
+	<input type="hidden" id="pascalTableName" name="pascalTableName" />
+	<input type="hidden" id="voString" name="voString" />
+	<input type="hidden" id="searchVoString" name="searchVoString" />
+	<input type="hidden" id="daoString" name="daoString" />
+	<input type="hidden" id="sqlMapString" name="sqlMapString" />
+	<input type="hidden" id="serviceString" name="serviceString" />
+	<input type="hidden" id="serviceImplString" name="serviceImplString" />
+	<input type="hidden" id="controllerString" name="controllerString" />
+</form>
+<br />
+<div id="resultTabs">
+	<ul>
+		<li id="vo"><a href="#voDiv">vo</a></li>
+		<li id="searchVo"><a href="#searchVoDiv">searchVo</a></li>
+		<li id="dao"><a href="#daoDiv">dao</a></li>
+		<li id="sqlMap"><a href="#sqlMapDiv">sqlmap</a></li>
+		<li id="service"><a href="#serviceDiv">service</a></li>
+		<li id="serviceImpl"><a href="#serviceImplDiv">serviceImpl</a></li>
+		<li id="controller"><a href="#controllerDiv">contrroller</a></li>
+		<li id="listJsp"><a href="#listJspDiv">listJsp</a></li>
+		<li id="template"><a href="#templateDiv">template</a></li>
+	</ul>
+	<div id="voDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="voTextarea" data-key="vo" data-mode="text/x-java"></textarea></div>
+	<div id="searchVoDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="searchVoTextarea" data-key="searchVo" data-mode="text/x-java"></textarea></div>
+	<div id="daoDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="daoTextarea" data-key="dao" data-mode="text/x-java"></textarea></div>
+	<div id="sqlMapDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="sqlMapTextarea" data-key="sqlMap" data-mode="htmlmixed"></textarea></div>
+	<div id="serviceDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="serviceTextarea" data-key="service" data-mode="text/x-java"></textarea></div>
+	<div id="serviceImplDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="serviceImplTextarea" data-key="serviceImpl" data-mode="text/x-java"></textarea></div>
+	<div id="controllerDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="controllerTextarea" data-key="controller" data-mode="text/x-java"></textarea></div>
+	<div id="listJspDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="listJspTextarea" data-key="listJsp" data-mode="htmlmixed"></textarea></div>
+	<div id="templateDiv" class="codeMirrorDiv"><textarea class="codeMirrorTextarea" id="templateTextarea" data-key="template" data-mode="htmlmixed"></textarea></div>
+</div>
+<br />
+<br />
 
-	<script type="text/javaScript">
-		$(document).ready(function() {
-			var $excelUploadForm = $("#excelUploadForm");
+<script type="text/javascript">
+$(function() {
+	var contextPath = "${jstlSt}pageContext.request.contextPath}";
+	var editor = new Object();
+	var $queryTabs = $( "#queryTabs");
+	var $resultTabs = $( "#resultTabs");
 
-			$(":file").filestyle();
-			$("#dataTable").show();
-			$("#excelUploadBtn").on("click",function() {
-				var excelFileVal = $("#excelFile", $excelUploadForm).val();
-				if (excelFileVal && excelFileVal.length > 0) {
-					if (excelFileVal.toLowerCase().endsWith('xls') || excelFileVal.toLowerCase().endsWith('xlsx')) {
-						if(confirm("파일을 업로드 하시겠습니까?") == true){
-							$excelUploadForm.submit();
-						}
-					}
-					else {
-						alert("엑셀 파일만 업로드 가능합니다.");
-					}
+	$queryTabs.tabs({
+		activate: function(event, ui) {
+			var tabId = $(ui.newTab).attr("id");
+			if (editor[tabId]) editor[tabId].refresh();
+		}
+	});
+
+	$resultTabs.tabs({
+		/* event: "mouseover", */
+		activate: function(event, ui) {
+			var tabId = $(ui.newTab).attr("id");
+			if (editor[tabId]) editor[tabId].refresh();
+		}
+	});
+
+	/*
+	$resultTabs.find(".ui-tabs-nav").sortable({
+		axis: "x",
+		stop: function() {
+			$resultTabs.tabs("refresh");
+		}
+	});
+	*/
+
+	var dataTable = $('#tablesList').DataTable({
+		"lengthMenu": [5, 10, 25, 50, 100],
+		"pageLength": 5,
+		"paging": true,
+		"ordering": true,
+		"order": [],
+		"info": true,
+		"fnDrawCallback": function() {},
+		"columnDefs": [
+			{"targets": [], "visible": true, "searchable": true}
+		]
+	});
+
+	$("#tablesList.table > tbody > tr:first").trigger("click");
+
+	var mixedMode = {
+		name: "htmlmixed",
+		scriptTypes: [
+			{matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
+			{matches: /(text|application)\/(x-)?vb(a|script)/i, mode: "vbscript"}
+		]
+	};
+
+	$(".codeMirrorTextarea").each(function() {
+		var data = $(this).data();
+		console.log(data);
+		editor[data.key] = CodeMirror.fromTextArea(this, {
+			lineNumbers: true,
+			tabSize: 4,
+			indentUnit: 4,
+			indentWithTabs: true,
+			matchBrackets: true,
+			selectionPointer: true,
+			scrollbarStyle: "simple",
+			mode: data.mode === "htmlmixed" ? mixedMode : data.mode
+		});
+	});
+
+	setCode("query", {});
+
+	$('#executeSqlForm').ajaxForm({
+		success: function(result) {
+			var tableName = result.searchVO.tableName.toLowerCase() || "execute_query_tab";
+			var tableComments = result.searchVO.tableComments || "쿼리문실행";
+			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			$("#packageName").val(packageName);
+			$("#pascalTableName").val(pascalCasing(tableName));
+			var resultList = result.resultList;
+			var tmpObj = {
+				"jstlSt": "\$\{",
+				"jstlEd": "\}",
+				"packageName": packageName,
+				"tableName": tableName.toLowerCase(),
+				"tableComments": tableComments,
+				"pascalTableName": pascalCasing(tableName),
+				"camelTableName": camelCasing(tableName),
+				"colArr": new Array(),
+				"primaryKeyArr": new Array()
+			};
+			resultList.forEach(function(v, i) {
+				var newObj = {
+					columnName: v.columnName.toLowerCase(),
+					columnComments: v.columnComments ? v.columnComments.replace(/\s/gi, "") : "",
+					camelColumnName: camelCasing(v.columnName),
+					pascalColumnName: pascalCasing(v.columnName),
+					javaDataType: getJavaType(v.dataType),
+					dbDataType: v.dataType,
+					dataLength: v.dataLength,
+					jstlValStr: "\$\{" + tmpObj.camelTableName + "VO." + camelCasing(v.columnName) + "\}"
+				};
+				tmpObj.colArr.push(newObj);
+				if('Y' === v.primaryKeyYn) {
+					tmpObj.primaryKeyArr.push(newObj);
 				}
-				else {
-					alert("파일을 선택하세요.");
+			});
+			console.log(JSON.stringify(tmpObj));
+			$(".codeMirrorTextarea", $resultTabs).each(function() {
+				var data = $(this).data();
+				setCode(data.key, tmpObj);
+			});
+		},
+		dataType: "json"
+	});
+
+	$("#executeSqlBtn").click(function() {
+		var $executeSqlForm = $("#executeSqlForm")
+		$("#sql", $executeSqlForm).val(editor["query"].getValue());
+		$executeSqlForm.submit();
+	});
+
+	$('#saveAsFileForm').ajaxForm({
+		success: function(result) {
+			alert(result.message);
+		}
+	});
+
+	$("#saveAsFileBtn").click(function() {
+		$(".codeMirrorTextarea").each(function() {
+			var data = $(this).data();
+			$("#" + data.key + "String").val(editor[data.key].getValue());
+		});
+		$("#saveAsFileForm").submit();
+	});
+	
+	$('#tablesList tbody').on('click', 'tr', function () {
+		$(".selectTd", "#tablesList.table > tbody > tr").removeClass("selectTd");
+		$("td", this).addClass("selectTd");
+		var data = dataTable.row(this).data();
+		codebuilder(data);
+	});
+
+	$("#tablesList.table > tbody > tr:first").trigger("click");
+
+	function codebuilder(data) {
+		var tableName = data[0];
+		var tableComments = data[1];
+
+		$.ajax({
+			method: "POST",
+			url: "./selectDS2TableColumnsListJson.do",
+			data: {tableName: tableName},
+			dataType: "json"
+		}).done(function(msg) {
+			var tableName = msg.searchVO.tableName.toLowerCase();
+			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			$("#packageName").val(packageName);
+			$("#pascalTableName").val(pascalCasing(tableName));
+			var resultList = msg.resultList;
+			var tmpObj = {
+				"jstlSt": "\$\{",
+				"jstlEd": "\}",
+				"packageName": packageName,
+				"tableName": tableName.toLowerCase(),
+				"tableComments": tableComments,
+				"pascalTableName": pascalCasing(tableName),
+				"camelTableName": camelCasing(tableName),
+				"colArr": new Array(),
+				"primaryKeyArr": new Array()
+			};
+			resultList.forEach(function(v, i) {
+				var newObj = {
+					columnName: v.columnName.toLowerCase(),
+					columnComments: v.columnComments ? v.columnComments.replace(/\s/gi, "") : "",
+					camelColumnName: camelCasing(v.columnName),
+					pascalColumnName: pascalCasing(v.columnName),
+					javaDataType: getJavaType(v.dataType),
+					dbDataType: v.dataType,
+					dataLength: v.dataLength,
+					jstlValStr: "\$\{" + tmpObj.camelTableName + "VO." + camelCasing(v.columnName) + "\}"
+				};
+				tmpObj.colArr.push(newObj);
+				if('Y' === v.primaryKeyYn) {
+					tmpObj.primaryKeyArr.push(newObj);
 				}
 			});
-
-			$('#dataTable>tfoot th').each(function() {
-				var title = $(this).text();
-				$(this).empty().append('<input type="text" style="width: 100%;" placeholder="' + title + ' 검색" />');
-			});
-			
-			var dataTable = $('#dataTable').DataTable({
-				"lengthMenu": [25, 50, 100],
-				"pageLength": 25,
-				"paging": true,
-				"ordering": true,
-				"order": [],
-				"info": true,
-				"scrollX": true,
-				"scrollY": "400px",
-				"fnDrawCallback": function() {},
-				"columnDefs": [
-					{"targets": getShowCol(), "visible": true, "searchable": true}
-				]
-			});
-
-			function getShowCol() {
-				var retArr = new Array();
-				var $dataTable = $('#dataTable');
-				var $dataTableTh = $("thead>tr>th", $dataTable);
-				$dataTableTh.each(function(i, v) {
-					if (i < 10) {
-						retArr.push($dataTableTh.index(v));
-					}
-				});
-				return retArr;
-			}
-
-			dataTable.columns().every(function() {
-				var that = this;
-				$('input', this.footer()).on('keyup change', function() {
-					if(that.search() !== this.value) {
-						that.search(this.value).draw();
-					}
-				});
-			});
-
-			$('#dataTable>tbody').on('mouseenter', 'tr', function() {
-				$(this).parents("tbody:first").find("tr.highlight").removeClass('highlight');
-				$(this).addClass('highlight');
-			});
-
-			$('#dataTable>tbody').on('click', 'tr', function() {
-				$(this).parents("tbody:first").find("tr.selected").removeClass('selected');
-				$(this).addClass('selected');
-			});
-
-			$('a.toggle-vis').on( 'click', function (e) {
-				e.preventDefault();
-				var column = dataTable.column($(this).attr('data-column'));
-				column.visible(!column.visible());
+			console.log(JSON.stringify(tmpObj));
+			$(".codeMirrorTextarea", $resultTabs).each(function() {
+				var data = $(this).data();
+				setCode(data.key, tmpObj);
 			});
 		});
-	</script>
-</body>
-</html>
+	}
+
+	function camelCasing(columnName) {
+		var tmpArr = columnName.toLowerCase().split(/_/);
+		tmpArr.forEach(function(v, i) {
+			if (i > 0) {
+				tmpArr[i] = v.substr(0, 1).toUpperCase() + v.substr(1);
+			}
+		});
+		return tmpArr.join(''); 
+	}
+
+	function pascalCasing(columnName) {
+		var tmpArr = columnName.toLowerCase().split(/_/);
+		tmpArr.forEach(function(v, i) {
+			tmpArr[i] = v.substr(0, 1).toUpperCase() + v.substr(1);
+		});
+		return tmpArr.join(''); 
+	}
+
+	function getJavaType(dataType) {
+		var retType = "String";
+		if ("NVARCHAR2" === dataType.toUpperCase()) {
+			retType = "String";
+		}
+		else if ("NUMBER" === dataType.toUpperCase()) {
+			retType = "Long";
+		}
+		else if ("DATE" === dataType.toUpperCase()) {
+			retType = "Date";
+		}
+		return retType;
+	}
+
+	function formatStr(str, obj) {
+		var retStr = str;
+		for (key in obj) {
+			var regexp = new RegExp("\\%\\{" + key + "\\}", "gi");
+			retStr = retStr.replace(regexp, obj[key]);
+		}
+		return retStr;
+	}
+
+	function setCode(key,  d) {
+		$.get(contextPath + "/codebuilder/template/hrdnet/" + key + ".txt", function(data) {
+			editor[key].setValue(data.process(d));
+			//$("#" + key + "Textarea").val(data.process(d));
+		}, "text");
+	}
+});
+
+
+</script>

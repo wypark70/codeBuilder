@@ -11,6 +11,7 @@
 	background-position: right;
 	background-repeat: no-repeat;
 }
+#queryTabs .tableDiv {padding: 10px 0px 0px 0px !important;}
 #queryTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
 #queryTabs .codeMirrorTextarea {width: 100%; height: 300px;}
 
@@ -23,15 +24,15 @@
 #resultTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
 #resultTabs .codeMirrorTextarea {width: 100%; height: 600px;}
 
-#tablesList th {font-size: 14px;}
-#tablesList td {font-size: 12px;}
+th {font-size: 12px;}
+td {font-size: 12px;}
 </style>
 <div id="queryTabs">
 	<ul>
 		<li id="table"><a href="#tableDiv">tableDiv</a></li>
 		<li id="query"><a href="#queryDiv">queryDiv</a></li>
 	</ul>
-	<div id="tableDiv">
+	<div id="tableDiv" class="tableDiv">
 		<table id="tablesList" class="nowrap table table-striped table-bordered bootstrap-datatable">
 			<thead>
 				<tr>
@@ -60,11 +61,12 @@
 							<input type="text" id="tableComments" name="tableComments" class="form-control" placeholder="tableComments" />
 							<input id="sql" name="sql" type="hidden" />
 						</div>
-						<button id="executeSqlBtn" type="submit" class="btn btn-default">Submit</button>
+						<button id="executeSqlBtn" type="button" class="btn btn-default">Submit</button>
 					</form>
 				</div>
 			</div>
 		</nav>
+		<div id="queryResultDiv" cless="well"></div>
 	</div>
 </div>
 <br />
@@ -119,8 +121,10 @@
 $(function() {
 	var contextPath = "${pageContext.request.contextPath}";
 	var editor = new Object();
-	var $queryTabs = $( "#queryTabs");
-	var $resultTabs = $( "#resultTabs");
+	var $queryTabs = $("#queryTabs");
+	var $resultTabs = $("#resultTabs");
+	var $executeSqlForm = $('#executeSqlForm');
+	var $queryResultDiv = $("#queryResultDiv");
 
 	$queryTabs.tabs({
 		activate: function(event, ui) {
@@ -146,7 +150,7 @@ $(function() {
 	});
 	*/
 
-	var dataTable = $('#tablesList').DataTable({
+	var tableInfoDataTable = $('#tablesList').DataTable({
 		"lengthMenu": [5, 10, 25, 50, 100],
 		"pageLength": 5,
 		"paging": true,
@@ -171,29 +175,65 @@ $(function() {
 
 	$(".codeMirrorTextarea").each(function() {
 		var data = $(this).data();
-		console.log(data);
-		editor[data.key] = CodeMirror.fromTextArea(this, {
-			lineNumbers: true,
-			tabSize: 4,
-			indentUnit: 4,
-			indentWithTabs: true,
-			matchBrackets: true,
-			selectionPointer: true,
-			scrollbarStyle: "simple",
-			mode: data.mode === "htmlmixed" ? mixedMode : data.mode
-		});
+		if (data.key == 'query') {
+			editor[data.key] = CodeMirror.fromTextArea(this, {
+				lineNumbers: true,
+				tabSize: 4,
+				indentUnit: 4,
+				indentWithTabs: true,
+				matchBrackets: true,
+				selectionPointer: true,
+				scrollbarStyle: "simple",
+				extraKeys: {"Ctrl-Enter": function() {
+						$("#executeSqlBtn").trigger("click");
+					}
+				},
+				mode: data.mode === "htmlmixed" ? mixedMode : data.mode
+			});
+		}
+		else {
+			editor[data.key] = CodeMirror.fromTextArea(this, {
+				lineNumbers: true,
+				tabSize: 4,
+				indentUnit: 4,
+				indentWithTabs: true,
+				matchBrackets: true,
+				selectionPointer: true,
+				scrollbarStyle: "simple",
+				mode: data.mode === "htmlmixed" ? mixedMode : data.mode
+			});
+		}
 	});
 
 	setCode("query", {});
 
-	$('#executeSqlForm').ajaxForm({
+	$executeSqlForm.ajaxForm({
 		success: function(result) {
 			var tableName = result.searchVO.tableName.toLowerCase() || "execute_query_tab";
 			var tableComments = result.searchVO.tableComments || "쿼리문실행";
 			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
 			$("#packageName").val(packageName);
 			$("#pascalTableName").val(pascalCasing(tableName));
-			var resultList = result.resultList;
+			var resultList = result.tableColumnsVOList;
+			if (result.message == "FAIL") {
+				$queryResultDiv.empty();
+				$queryResultDiv.append('<p>' + result.errorMessage + '</p>');
+				$queryResultDiv.append('<pre>' + result.errorStacTraceString + '</pre>');
+				$(".codeMirrorTextarea", $resultTabs).each(function() {
+					var data = $(this).data();
+					editor[data.key].setValue("");
+				});
+				return false;
+			}
+			if (!resultList || resultList.length < 1) {
+				$queryResultDiv.empty();
+				$queryResultDiv.append('<p>Resultset 결과가 없습니다.</p>');
+				$(".codeMirrorTextarea", $resultTabs).each(function() {
+					var data = $(this).data();
+					editor[data.key].setValue("");
+				});
+				return false;
+			}
 			var tmpObj = {
 				"jstlSt": "\$\{",
 				"jstlEd": "\}",
@@ -221,19 +261,47 @@ $(function() {
 					tmpObj.primaryKeyArr.push(newObj);
 				}
 			});
-			console.log(JSON.stringify(tmpObj));
 			$(".codeMirrorTextarea", $resultTabs).each(function() {
 				var data = $(this).data();
 				setCode(data.key, tmpObj);
+			});
+
+			var $queryResultTable = $('<table id="queryResultTable" class="nowrap table table-striped table-bordered bootstrap-datatable"></table>');
+			$queryResultDiv.empty();
+			$queryResultDiv.append($queryResultTable);
+			$queryResultTable.DataTable({
+				"destroy": true,
+				"data": result.resultDataList,
+				"scrollX": true,
+				"scrollY": "300px",
+				"order": [],
+				"columns": result.columnMapList
 			});
 		},
 		dataType: "json"
 	});
 
 	$("#executeSqlBtn").click(function() {
-		var $executeSqlForm = $("#executeSqlForm")
-		$("#sql", $executeSqlForm).val(editor["query"].getValue());
-		$executeSqlForm.submit();
+		var lineNo = editor["query"].getCursor().line + 1;
+		var queryStr = editor["query"].getValue();
+		if (queryStr && queryStr.length > 0) {
+			var queryArr = queryStr.split(/\;/);
+			var tmpLineNo = 1;
+			for(var i in queryArr) {
+				tmpLineNo += (queryArr[i].split(/\n/).length - 1);
+				console.log("tmpLine: " + tmpLineNo);
+				console.log("lineNo: " + lineNo);
+				console.log("query: " + queryArr[i]);
+				if (tmpLineNo >= lineNo) {
+					$("#sql", $executeSqlForm).val(queryArr[i]);
+					$executeSqlForm.submit();
+					break;
+				}
+			}
+		}
+		else {
+			alert("쿼리문은 작성하세요.");
+		}
 	});
 
 	$('#saveAsFileForm').ajaxForm({
@@ -253,7 +321,7 @@ $(function() {
 	$('#tablesList tbody').on('click', 'tr', function () {
 		$(".selectTd", "#tablesList.table > tbody > tr").removeClass("selectTd");
 		$("td", this).addClass("selectTd");
-		var data = dataTable.row(this).data();
+		var data = tableInfoDataTable.row(this).data();
 		codebuilder(data);
 	});
 
@@ -265,7 +333,7 @@ $(function() {
 
 		$.ajax({
 			method: "POST",
-			url: "./selectDS2TableColumnsListJson.do",
+			url: "<c:url value="/codebuilder/selectDS2TableColumnsListJson.do" />",
 			data: {tableName: tableName},
 			dataType: "json"
 		}).done(function(msg) {
@@ -301,7 +369,6 @@ $(function() {
 					tmpObj.primaryKeyArr.push(newObj);
 				}
 			});
-			console.log(JSON.stringify(tmpObj));
 			$(".codeMirrorTextarea", $resultTabs).each(function() {
 				var data = $(this).data();
 				setCode(data.key, tmpObj);
