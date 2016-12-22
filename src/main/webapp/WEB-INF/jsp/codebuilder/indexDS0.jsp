@@ -74,7 +74,8 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	$('#elfinder').elfinder({
-		url : '<c:url value="/elfinder/connector" />'
+		url: '<c:url value="/elfinder/connector" />',
+		lang: 'ko'
 	});
 });
 </script>
