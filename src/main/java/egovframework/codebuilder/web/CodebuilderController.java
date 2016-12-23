@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import egovframework.codebuilder.service.TableColumnsService;
+import egovframework.codebuilder.service.ColumnsService;
 import egovframework.codebuilder.service.TablesService;
-import egovframework.codebuilder.vo.TableColumnsVO;
+import egovframework.codebuilder.vo.ColumnsSearchVO;
+import egovframework.codebuilder.vo.ColumnsVO;
 import egovframework.codebuilder.vo.TablesVO;
 
 @Controller
@@ -32,7 +33,7 @@ public class CodebuilderController {
 	private TablesService tablesService;
 
 	@Resource(name = "tableColumnsService")
-	private TableColumnsService tableColumnsService;
+	private ColumnsService tableColumnsService;
 
 	@RequestMapping("/codebuilder/indexDS0.do")
 	public String indexDS0(@ModelAttribute("searchVO") TablesVO tablesVO, Model model) throws Exception {
@@ -194,27 +195,27 @@ public class CodebuilderController {
 	}
 
 	@RequestMapping(value = "/codebuilder/selectDS0TableColumnsListJson.do")
-	public String selectTableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
-		Map<String, Object> map = tableColumnsService.selectDS0TableColumnsList(tableColumnsVO);
-		model.addAttribute("searchVO", tableColumnsVO);
+	public String selectTableColumnsListJson(@ModelAttribute("searchVO") ColumnsSearchVO columnsSearchVO, Model model) throws Exception {
+		Map<String, Object> map = tableColumnsService.selectDS0TableColumnsList(columnsSearchVO);
+		model.addAttribute("searchVO", columnsSearchVO);
 		model.addAttribute("resultList", map.get("resultList"));
 		model.addAttribute("resultCnt", map.get("resultCnt"));
 		return "jsonView";
 	}
 
 	@RequestMapping(value = "/codebuilder/selectDS1TableColumnsListJson.do")
-	public String selectDS1TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
-		Map<String, Object> map = tableColumnsService.selectDS1TableColumnsList(tableColumnsVO);
-		model.addAttribute("searchVO", tableColumnsVO);
+	public String selectDS1TableColumnsListJson(@ModelAttribute("searchVO") ColumnsSearchVO columnsSearchVO, Model model) throws Exception {
+		Map<String, Object> map = tableColumnsService.selectDS1TableColumnsList(columnsSearchVO);
+		model.addAttribute("searchVO", columnsSearchVO);
 		model.addAttribute("resultList", map.get("resultList"));
 		model.addAttribute("resultCnt", map.get("resultCnt"));
 		return "jsonView";
 	}
 
 	@RequestMapping("/codebuilder/selectDS2TableColumnsListJson.do")
-	public String selectDS2TableColumnsListJson(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, Model model) throws Exception {
-		Map<String, Object> map = tableColumnsService.selectDS2TableColumnsList(tableColumnsVO);
-		model.addAttribute("searchVO", tableColumnsVO);
+	public String selectDS2TableColumnsListJson(@ModelAttribute("searchVO") ColumnsSearchVO columnsSearchVO, Model model) throws Exception {
+		Map<String, Object> map = tableColumnsService.selectDS2TableColumnsList(columnsSearchVO);
+		model.addAttribute("searchVO", columnsSearchVO);
 		model.addAttribute("resultList", map.get("resultList"));
 		model.addAttribute("resultCnt", map.get("resultCnt"));
 
@@ -222,12 +223,12 @@ public class CodebuilderController {
 	}
 
 	@RequestMapping("/codebuilder/selectDS2TableColumnsListJsonBySQL.do")
-	public String selectDS2TableColumnsListJsonBySQL(@ModelAttribute("searchVO") TableColumnsVO tableColumnsVO, @RequestParam String sql, Model model) throws Exception {
+	public String selectDS2TableColumnsListJsonBySQL(@ModelAttribute("searchVO") ColumnsSearchVO columnsSearchVO, @RequestParam String sql, Model model) throws Exception {
 		Map<String, Object> map = null;
 		try {
 			map = tableColumnsService.executeQuery(sql);
 			model.addAttribute("message", "SUCCESS");
-			model.addAttribute("searchVO", tableColumnsVO);
+			model.addAttribute("searchVO", columnsSearchVO);
 			model.addAttribute("tableColumnsVOList", map.get("tableColumnsVOList"));
 			model.addAttribute("columnMapList", map.get("columnMapList"));
 			model.addAttribute("resultDataList", map.get("resultDataList"));
