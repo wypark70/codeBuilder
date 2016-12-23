@@ -59,7 +59,6 @@ public class TablesServiceImpl extends EgovAbstractServiceImpl implements Tables
 		int cnt = tablesClient2DAO.selectTablesListCnt(searchVO);
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("searchVO", searchVO);
 		map.put("resultList", result);
 		map.put("resultCnt", Integer.toString(cnt));
 
