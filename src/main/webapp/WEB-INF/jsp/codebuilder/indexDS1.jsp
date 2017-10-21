@@ -5,7 +5,7 @@
 <style type="text/css">
 .selectTd {background: #775577 !important;}
 
-#queryTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; height: 300px;}
+#queryTabs .CodeMirror {font-family: D2Coding; font-weight: bold; height: 300px;}
 #queryTabs .cm-tab {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
 	background-position: right;
@@ -15,7 +15,7 @@
 #queryTabs .codeMirrorDiv {padding: 0px 0px 0px 0px !important;}
 #queryTabs .codeMirrorTextarea {width: 100%; height: 300px;}
 
-#resultTabs .CodeMirror {font-family: 나눔고딕코딩; font-weight: bold; height: 600px;}
+#resultTabs .CodeMirror {font-family: D2Coding; font-weight: bold; height: 600px;}
 #resultTabs .cm-tab {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
 	background-position: right;
@@ -248,7 +248,7 @@ $(function() {
 		success: function(result) {
 			var tableName = result.searchVO.tableName.toLowerCase() || "execute_query_tab";
 			var tableComments = result.searchVO.tableComments || "쿼리문실행";
-			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			var packageName = $("#packageName").val() || "bootcms.extension.shcadmin";
 			$("#packageName").val(packageName);
 			$("#pascalTableName").val(pascalCasing(tableName));
 			var resultList = result.tableColumnsVOList;
@@ -375,7 +375,7 @@ $(function() {
 			dataType: "json"
 		}).done(function(msg) {
 			var tableName = msg.searchVO.tableName.toLowerCase();
-			var packageName = $("#packageName").val() || "eduport.lms.back.cpmgnt";
+			var packageName = $("#packageName").val() || "bootcms.extension.shcadmin";
 			$("#packageName").val(packageName);
 			$("#pascalTableName").val(pascalCasing(tableName));
 			var resultList = msg.resultList;

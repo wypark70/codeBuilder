@@ -25,11 +25,11 @@ public class ${pascalTableName}DAO extends EgovAbstractDAO {
 	}
 
 	public int select${pascalTableName}PageListCnt(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
-		return (Integer) select("${packageName}.select${pascalTableName}PageListCnt", ${camelTableName}SearchVO);
+		return (Integer) selectByPk("${packageName}.select${pascalTableName}PageListCnt", ${camelTableName}SearchVO);
 	}
 
 	public ${pascalTableName}VO select${pascalTableName}ByPrimaryKey(${pascalTableName}SearchVO ${camelTableName}SearchVO) {
-		return (${pascalTableName}VO) select("${packageName}.select${pascalTableName}ByPrimaryKey", ${camelTableName}SearchVO);
+		return (${pascalTableName}VO) selectByPk("${packageName}.select${pascalTableName}ByPrimaryKey", ${camelTableName}SearchVO);
 	}
 
 	public Object insert${pascalTableName}(${pascalTableName}VO ${camelTableName}VO) {
