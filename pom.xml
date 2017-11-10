@@ -58,6 +58,12 @@
 			<groupId>egovframework.rte</groupId>
 			<artifactId>egovframework.rte.psl.dataaccess</artifactId>
 			<version>${egovframework.rte.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>egovframework.rte</groupId>
@@ -180,6 +186,16 @@
 			<version>8.4</version>
 		</dependency>
 		-->
+
+		<!-- 3rd party 라이브러리로 별도의 설치 필요 -->
+		<!-- oracle 10g driver -->
+		<dependency>
+			<groupId>ojdbc</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>14</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc-14.jar</systemPath>
+		</dependency>
 
 		<dependency>
 			<groupId>org.lazyluke</groupId>
