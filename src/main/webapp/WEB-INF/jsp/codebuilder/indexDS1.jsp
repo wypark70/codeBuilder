@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <style type="text/css">
+section {padding: 18px 0;}
 .selectTd {background: #775577 !important;}
 
 #queryTabs .CodeMirror {font-family: D2Coding; font-weight: bold; height: 300px;}
