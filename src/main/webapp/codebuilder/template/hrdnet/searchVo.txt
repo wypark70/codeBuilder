@@ -5,16 +5,13 @@
 
 package ${packageName}.vo;
 
-import java.util.Date;
-
-import egovframework.com.cmm.vo.SearchVO;
 import net.sf.json.JSONObject;
 
 /*
  * ${tableComments}(${tableName})
  */
 
-public class ${pascalTableName}SearchVO extends SearchVO {
+public class ${pascalTableName}SearchVO {
 	{for col in primaryKeyArr}${tab}private ${col.javaDataType} ${col.camelColumnName};{if col.columnComments}${" //"}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${newLine}{/for}
 ${blank}
 	@Override

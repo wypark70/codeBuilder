@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
  */
 
 public class ${pascalTableName}VO {
-	{for col in colArr}${tab}private ${col.javaDataType} ${col.camelColumnName};{if col.columnComments}${" //"}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${newLine}{/for}
+	{for col in colArr}${tab}private ${col.javaDataType} ${col.camelColumnName};{if col.columnComments}${" // "}${col.columnComments} ${col.dbDataType}(${col.dataLength}){/if}${newLine}{/for}
 ${blank}
 	@Override
 	public String toString() {

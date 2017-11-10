@@ -11,14 +11,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
-
 /*
  * ${tableComments}(${tableName})
  */
 
 @Service("${camelTableName}Service")
-public class ${pascalTableName}ServiceImpl extends EgovAbstractServiceImpl implements ${pascalTableName}Service {
+public class ${pascalTableName}ServiceImpl implements ${pascalTableName}Service {
 	@Resource(name = "${camelTableName}DAO")
 	private ${pascalTableName}DAO ${camelTableName}DAO;
 
