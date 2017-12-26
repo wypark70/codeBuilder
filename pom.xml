@@ -150,9 +150,9 @@
 		<dependency>
 			<groupId>ojdbc</groupId>
 			<artifactId>ojdbc</artifactId>
-			<version>8</version>
+			<version>6</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc8.jar</systemPath>
+			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc6.jar</systemPath>
 		</dependency>
 
 		<!--
@@ -197,15 +197,13 @@
 
 		<!-- 3rd party 라이브러리로 별도의 설치 필요 -->
 		<!-- oracle 10g driver -->
-		<!--
 		<dependency>
 			<groupId>ojdbc</groupId>
 			<artifactId>ojdbc</artifactId>
-			<version>14</version>
+			<version>8</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc-14.jar</systemPath>
+			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc8.jar</systemPath>
 		</dependency>
-		-->
 
 		<dependency>
 			<groupId>org.lazyluke</groupId>
