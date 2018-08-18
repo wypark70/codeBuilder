@@ -13,33 +13,27 @@ import cn.bluejoe.elfinder.controller.executor.CommandExecutor;
 import cn.bluejoe.elfinder.controller.executor.FsItemEx;
 import cn.bluejoe.elfinder.service.FsService;
 
-public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor
-{
+public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor {
 	@Override
 	public void execute(FsService fsService, HttpServletRequest request, ServletContext servletContext, JSONObject json)
-			throws Exception
-	{
+			throws Exception {
 		String[] targets = request.getParameterValues("targets[]");
-		String src = request.getParameter("src");
 		String dst = request.getParameter("dst");
 		boolean cut = "1".equals(request.getParameter("cut"));
 
 		List<FsItemEx> added = new ArrayList<>();
 		List<String> removed = new ArrayList<>();
 
-		FsItemEx fsrc = super.findItem(fsService, src);
 		FsItemEx fdst = super.findItem(fsService, dst);
 
-		for (String target : targets)
-		{
+		for (String target : targets) {
 			FsItemEx ftgt = super.findItem(fsService, target);
 			String name = ftgt.getName();
 			FsItemEx newFile = new FsItemEx(fdst, name);
 			super.createAndCopy(ftgt, newFile);
 			added.add(newFile);
 
-			if (cut)
-			{
+			if (cut) {
 				ftgt.delete();
 				removed.add(target);
 			}

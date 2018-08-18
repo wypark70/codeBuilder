@@ -17,7 +17,6 @@ public class RmCommandExecutor extends AbstractJsonCommandExecutor implements Co
 	@Override
 	public void execute(FsService fsService, HttpServletRequest request, ServletContext servletContext, JSONObject json) throws Exception {
 		String[] targets = request.getParameterValues("targets[]");
-		String current = request.getParameter("current");
 		List<String> removed = new ArrayList<String>();
 
 		for (String target : targets) {

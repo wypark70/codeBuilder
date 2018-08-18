@@ -17,7 +17,6 @@ public class RenameCommandExecutor extends AbstractJsonCommandExecutor implement
 			throws Exception
 	{
 		String target = request.getParameter("target");
-		String current = request.getParameter("current");
 		String name = request.getParameter("name");
 
 		FsItemEx fsi = super.findItem(fsService, target);

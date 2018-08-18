@@ -6,7 +6,8 @@ package cn.bluejoe.elfinder.controller;
 public class ErrorException extends RuntimeException
 {
 
-    private final String error;
+	private static final long serialVersionUID = 3651802153060700532L;
+	private final String error;
     private final String[] args;
 
     /**
